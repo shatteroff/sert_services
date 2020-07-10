@@ -1,3 +1,5 @@
+import json
+
 import psycopg2
 
 
@@ -29,9 +31,10 @@ class PsqlHelper():
         if len(records) > 1:
             return 'Error'
         elif len(records) == 0:
-            return 'Нет таких данных'
+            return json.dumps({"response": "Empty data"})
         else:
-            return records[0][0]
+            records = records[0]
+            return json.dumps({"response": {"id": records[0], "alias": records[3], "name": records[4]}})
 
     def insert_user(self, phone, email, alias, name, password):
         if not phone:
