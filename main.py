@@ -34,7 +34,10 @@ def registration():
     password = user_dict.get('password')
     error_list = ph.get_exist_users(phone, email, alias)
     if error_list:
-        return json.dumps(f'{{"registration":{{"errors":{error_list}}}}}')
+        errors = ''.join(f'"{x}"' for x in error_list)
+        json_ex = json.dumps(f'{{"registration":{{"errors":{errors}}}}}')
+        print(json_ex)
+        return json_ex
     else:
         if alias and password and (phone or email):
             ph.insert_user(phone, email, alias, name, password)
@@ -44,4 +47,4 @@ def registration():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
