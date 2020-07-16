@@ -36,6 +36,23 @@ class PsqlHelper():
             records = records[0]
             return json.dumps({"response": {"id": records[0], "alias": records[3], "name": records[4]}})
 
+    def get_exist_users(self, phone, email, alias):
+        error_list = []
+        query = 'Select * from public.users'
+        query_phone = query + f" where phone ='{phone}'"
+        records = self.execute_query(query_phone)
+        if records:
+            error_list.append("phone")
+        query_email = query + f" where email = '{email}'"
+        records = self.execute_query(query_email)
+        if records:
+            error_list.append("email")
+        query_alias = query + f" where alias = '{alias}'"
+        records = self.execute_query(query_alias)
+        if records:
+            error_list.append("alias")
+        return error_list
+
     def insert_user(self, phone, email, alias, name, password):
         if not phone:
             phone = 'null'

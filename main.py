@@ -1,4 +1,5 @@
 from flask import Flask, request
+import json
 
 from PsqlHelper import PsqlHelper
 
@@ -31,12 +32,16 @@ def registration():
     alias = user_dict.get('alias')
     name = user_dict.get('name')
     password = user_dict.get('password')
-    if alias and password and (phone or email):
-        ph.insert_user(phone, email, alias, name, password)
-        return '{"response":"ok"}'
+    error_list = ph.get_exist_users(phone, email, alias)
+    if error_list:
+        return json.dumps(f'{{"registration":{{"errors":{error_list}}}}}')
     else:
-        return 'Please, fill in required fields', 500
+        if alias and password and (phone or email):
+            ph.insert_user(phone, email, alias, name, password)
+            return json.dumps('{"registration":"ok"}')
+        else:
+            return 'Please, fill in required fields', 500
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run()
