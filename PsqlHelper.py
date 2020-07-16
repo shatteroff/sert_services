@@ -39,18 +39,21 @@ class PsqlHelper():
     def get_exist_users(self, phone, email, alias):
         error_list = []
         query = 'Select * from public.users'
-        query_phone = query + f" where phone ='{phone}'"
-        records = self.execute_query(query_phone)
-        if records:
-            error_list.append("phone")
-        query_email = query + f" where email = '{email}'"
-        records = self.execute_query(query_email)
-        if records:
-            error_list.append("email")
-        query_alias = query + f" where alias = '{alias}'"
-        records = self.execute_query(query_alias)
-        if records:
-            error_list.append("alias")
+        if phone:
+            query_phone = query + f" where phone ='{phone}'"
+            records = self.execute_query(query_phone)
+            if records:
+                error_list.append('phone')
+        if email:
+            query_email = query + f" where email = '{email}'"
+            records = self.execute_query(query_email)
+            if records:
+                error_list.append('email')
+        if alias:
+            query_alias = query + f" where alias = '{alias}'"
+            records = self.execute_query(query_alias)
+            if records:
+                error_list.append('alias')
         return error_list
 
     def insert_user(self, phone, email, alias, name, password):
