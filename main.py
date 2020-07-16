@@ -33,7 +33,7 @@ def registration():
     password = user_dict.get('password')
     if alias and password and (phone or email):
         ph.insert_user(phone, email, alias, name, password)
-        return ''
+        return '{"response":"ok"}'
     else:
         return 'Please, fill in required fields', 500
 
