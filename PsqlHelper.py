@@ -1,11 +1,13 @@
 import json
+import uuid
 
 import psycopg2
 
 
 class PsqlHelper():
 
-    def execute_query(self, query, commit=False):
+    @staticmethod
+    def execute_query(query, commit=False):
         records = ''
         conn = psycopg2.connect(dbname='dbojgd8kb7avuc', user='jpsarrqiurvslr',
                                 password='9a473bf4a600d9abb06e8550c0e1aaa23fb7b09762113bcb8c6504e504d3e93e',
@@ -29,7 +31,7 @@ class PsqlHelper():
         query += f" and password = '{password}'"
         records = self.execute_query(query)
         if len(records) > 1:
-            return 'Error'
+            return json.dumps({"response": "Error"})
         elif len(records) == 0:
             return json.dumps({"response": "Empty data"})
         else:
@@ -72,3 +74,11 @@ class PsqlHelper():
                 f"VALUES ({phone},{email},'{alias}',{name},'{password}')"
         print(query)
         self.execute_query(query, commit=True)
+
+    def get_all_jobs_id(self):
+        ids = []
+        query = 'select id from public.projects'
+        records = self.execute_query(query)
+        for record in records:
+            ids.append(record[0])
+        return ids

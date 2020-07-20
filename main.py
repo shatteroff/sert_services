@@ -1,10 +1,12 @@
 from flask import Flask, request
 import json
 
+from Helper import Helper
 from PsqlHelper import PsqlHelper
 
 app = Flask(__name__)
 ph = PsqlHelper()
+h = Helper()
 
 
 @app.route('/')
@@ -20,30 +22,7 @@ def auth(login, password):
 @app.route('/registration', methods=['POST'])
 def registration():
     user_dict = request.get_json()
-    phone = user_dict.get('phone')
-    if phone:
-        try:
-            phone = int(phone)
-            if len(str(phone)) != 10:
-                return 'Wrong phone format', 500
-        except ValueError:
-            return 'Value for "phone" must be integer', 500
-    email = user_dict.get('email')
-    alias = user_dict.get('alias')
-    name = user_dict.get('name')
-    password = user_dict.get('password')
-    error_list = ph.get_exist_users(phone, email, alias)
-    if error_list:
-        # errors = ','.join(f'"{x}"' for x in error_list)
-        json_ex = json.dumps({"registration": {"errors": error_list}})
-        print(json_ex)
-        return json_ex
-    else:
-        if alias and password and (phone or email):
-            ph.insert_user(phone, email, alias, name, password)
-            return json.dumps({"registration": "ok"})
-        else:
-            return 'Please, fill in required fields', 500
+    return h.registration(user_dict)
 
 
 if __name__ == "__main__":
