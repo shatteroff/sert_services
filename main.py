@@ -27,7 +27,9 @@ def registration():
 
 @app.route('/getId', methods=['GET'])
 def get_id():
-    return h.get_id()
+    id_type = request.args.get('type')
+    if id_type:
+        return h.get_id(id_type)
 
 
 if __name__ == "__main__":

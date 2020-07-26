@@ -33,8 +33,8 @@ class Helper():
             else:
                 return 'Please, fill in required fields', 500
 
-    def get_id(self):
-        ids = self.ph.get_all_jobs_id()
+    def get_id(self, id_type):
+        ids = self.ph.get_all_ids(id_type)
         id_new = uuid.uuid4()
         while id_new in ids:
             id_new = uuid.uuid4()

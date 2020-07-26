@@ -75,9 +75,9 @@ class PsqlHelper():
         print(query)
         self.execute_query(query, commit=True)
 
-    def get_all_jobs_id(self):
+    def get_all_ids(self, id_type):
         ids = []
-        query = 'select id from public.projects'
+        query = f'select id from public.{id_type}'
         records = self.execute_query(query)
         for record in records:
             ids.append(record[0])
