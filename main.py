@@ -14,7 +14,7 @@ def index():
     return 'Hello World'
 
 
-@app.route('/auth/<login>/<password>')
+@app.route('/auth/<login>/<password>', methods=['GET'])
 def auth(login, password):
     return ph.get_login(login, password)
 
@@ -23,6 +23,11 @@ def auth(login, password):
 def registration():
     user_dict = request.get_json()
     return h.registration(user_dict)
+
+
+@app.route('/getId', methods=['GET'])
+def get_id():
+    return h.get_id()
 
 
 if __name__ == "__main__":

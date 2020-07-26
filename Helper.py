@@ -38,4 +38,4 @@ class Helper():
         id_new = uuid.uuid4()
         while id_new in ids:
             id_new = uuid.uuid4()
-        return id_new
+        return json.dumps({"id": str(id_new)})
