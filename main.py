@@ -1,5 +1,4 @@
 from flask import Flask, request
-import json
 
 from Helper import Helper
 from PsqlHelper import PsqlHelper
