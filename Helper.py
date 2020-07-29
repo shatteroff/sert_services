@@ -4,10 +4,10 @@ import uuid
 from PsqlHelper import PsqlHelper
 
 
-class Helper():
+class Helper:
     ph = PsqlHelper()
 
-    def registration(self, user_dict):
+    def user_registration(self, user_dict):
         phone = user_dict.get('phone')
         if phone:
             try:
@@ -39,3 +39,14 @@ class Helper():
         while id_new in ids:
             id_new = uuid.uuid4()
         return json.dumps({"id": str(id_new)})
+
+    def request_registration(self, request_dict):
+        user_id = request_dict.get('user_id')
+        request_type = request_dict.get('request_type')
+        custom_code = request_dict.get('custom_code')
+        product_type = request_dict.get('product_type')
+        doc_type = request_dict.get('doc_type')
+        validity_period = request_dict.get('validity_period')
+        add_info = request_dict.get('add_info')
+        self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info)
+        return json.dumps({"registration": "ok"})

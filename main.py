@@ -22,7 +22,7 @@ def auth(login, password):
 @app.route('/registration', methods=['POST'])
 def registration():
     user_dict = request.get_json()
-    return h.registration(user_dict)
+    return h.user_registration(user_dict)
 
 
 @app.route('/getId', methods=['GET'])
@@ -30,6 +30,12 @@ def get_id():
     id_type = request.args.get('type')
     if id_type:
         return h.get_id(id_type)
+
+@app.route('/requests/post', methods=['POST'])
+def post_request():
+    request_dict = request.get_json()
+
+
 
 
 if __name__ == "__main__":
