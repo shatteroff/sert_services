@@ -7,14 +7,14 @@ import psycopg2
 class PsqlHelper():
 
     @staticmethod
-    def __execute_query(query, commit=False):
+    def __execute_query(query, commit=False, is_return=False):
         records = ''
         conn = psycopg2.connect(dbname='dbojgd8kb7avuc', user='jpsarrqiurvslr',
                                 password='9a473bf4a600d9abb06e8550c0e1aaa23fb7b09762113bcb8c6504e504d3e93e',
                                 host='ec2-34-239-241-25.compute-1.amazonaws.com')
         cursor = conn.cursor()
         cursor.execute(query)
-        if not commit:
+        if not commit or is_return:
             records = cursor.fetchall()
         cursor.close()
         conn.commit()
@@ -103,6 +103,7 @@ class PsqlHelper():
             columns.append('add_info')
             values.append(add_info)
         values = list(f"'{v}'" for v in values)
-        query = f"INSERT INTO public.requests({','.join(columns)}) VALUES ({','.join(values)})"
+        query = f"INSERT INTO public.requests({','.join(columns)}) VALUES ({','.join(values)}) returning id"
         print(query)
-        self.__execute_query(query, commit=True)
+        records = self.__execute_query(query, commit=True, is_return=True)
+        return records[0][0]

@@ -48,5 +48,7 @@ class Helper:
         doc_type = request_dict.get('doc_type')
         validity_period = request_dict.get('validity_period')
         add_info = request_dict.get('add_info')
-        self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info)
-        return json.dumps({"registration": "ok"})
+        request_id = self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period,
+                                            add_info)
+        return json.dumps({"registration": "ok",
+                           "request_id": request_id})

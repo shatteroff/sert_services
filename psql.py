@@ -11,5 +11,5 @@ h = Helper()
 # ph.insert_request("6df766be-d3fe-4a4e-823d-fbc3476e7df5", 'email', None, 'ретля', None, '5', None)
 h.request_registration({'user_id': "6df766be-d3fe-4a4e-823d-fbc3476e7df5",
                         'request_type': 'email',
-                        'product_type': 'petlya',
+                        'product_type': 'window',
                         'validity_period': 7})
