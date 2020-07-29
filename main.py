@@ -31,11 +31,11 @@ def get_id():
     if id_type:
         return h.get_id(id_type)
 
+
 @app.route('/requests/post', methods=['POST'])
 def post_request():
     request_dict = request.get_json()
-
-
+    return h.request_registration(request_dict)
 
 
 if __name__ == "__main__":
