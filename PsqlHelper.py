@@ -83,7 +83,8 @@ class PsqlHelper():
             ids.append(record[0])
         return ids
 
-    def insert_request(self, user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info):
+    def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
+                       validity_period=None, add_info=None):
         columns = ['user_id', 'status', 'request_type']
         values = [user_id, 'new', request_type]
         if custom_code:
