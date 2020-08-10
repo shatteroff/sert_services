@@ -5,7 +5,7 @@ import uuid
 import psycopg2
 
 
-class PsqlHelper():
+class PsqlHelper:
 
     @staticmethod
     def __execute_query(query, commit=False, is_return=False):
@@ -113,3 +113,11 @@ class PsqlHelper():
         print(query)
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
+
+    def get_requests(self, user_id, top_count, status_list):
+        statuses = ','.join(f"'{status}'" for status in status_list)
+        query = f"""select * from public.requests
+                where user_id = '{user_id}' and status in ({statuses})
+                order by insert_dt desc limit {top_count}"""
+        records = self.__execute_query(query)
+        return records
