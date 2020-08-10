@@ -8,7 +8,7 @@ import psycopg2
 class PsqlHelper:
 
     @staticmethod
-    def __execute_query(query, commit=False, is_return=False):
+    def __execute_query(query, commit=False, is_return=False, is_columns_name=False):
         records = ''
         try:
             conn = psycopg2.connect(os.inviron['DATABASE'], sslmode='require')
@@ -22,10 +22,15 @@ class PsqlHelper:
         cursor.execute(query)
         if not commit or is_return:
             records = cursor.fetchall()
+        if is_columns_name:
+            columns = [desc[0] for desc in cursor.description]
         cursor.close()
         conn.commit()
         conn.close()
-        return records
+        if is_columns_name:
+            return records, columns
+        else:
+            return records
 
     def get_login(self, login, password):
         query = 'Select * from public.users'
@@ -117,7 +122,7 @@ class PsqlHelper:
     def get_requests(self, user_id, top_count, status_list):
         statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select * from public.requests
-                where user_id = '{user_id}' and status in ({statuses})
+                where user_id = '{user_id}' and status in ({statuses}) and request_type = 'app'
                 order by insert_dt desc limit {top_count}"""
-        records = self.__execute_query(query)
-        return records
+        records, columns = self.__execute_query(query, is_columns_name=True)
+        return records, columns

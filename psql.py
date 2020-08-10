@@ -13,6 +13,17 @@ h = Helper()
 #                         'request_type': 'email',
 #                         'product_type': 'window',
 #                         'validity_period': 7})
-records = ph.get_requests('1821f722-8f2e-449a-b37e-b10f2ec07039', 5, ['new'])
-for record in records:
-    print(record)
+# record_list = []
+#
+# records, columns = ph.get_requests('1821f722-8f2e-449a-b37e-b10f2ec07039', 5, ['new'])
+# print(columns)
+# print(records[0][5])
+# for record in records:
+#     request_new_dict = {}
+#     for i in range(len(columns) - 1):
+#         print(i)
+#         request_new_dict.update({columns[i]: record[i]})
+#     request_new_dict.update({"date": record[len(columns)-1].date()})
+#     record_list.append(request_new_dict)
+# print(record_list)
+h.get_user_requests({"user_id": '1821f722-8f2e-449a-b37e-b10f2ec07039', 'count': 5})

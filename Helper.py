@@ -52,3 +52,23 @@ class Helper:
                                             add_info)
         return json.dumps({"registration": "ok",
                            "request_id": request_id})
+
+    def get_user_requests(self, user_id, limit):
+        records_active = []
+        records_closed = []
+        records_new, columns = self.ph.get_requests(user_id, limit, ['new', 'in progress'])
+        records_old, columns = self.ph.get_requests(user_id, limit, ['closed'])
+        for record in records_new:
+            request_dict = {}
+            for i in range(len(columns) - 1):
+                request_dict.update({columns[i]: record[i]})
+            request_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
+            records_active.append(request_dict)
+        for record in records_old:
+            request_dict = {}
+            for i in range(len(columns) - 1):
+                request_dict.update({columns[i]: record[i]})
+            request_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
+            records_closed.append(request_dict)
+        json_to_send = {"active": records_active, "closed": records_closed}
+        return json.dumps(json_to_send, ensure_ascii=False)

@@ -37,6 +37,13 @@ def post_request():
     return h.request_registration(request_dict)
 
 
+@app.route('/requests/getByUser', methods=['GET'])
+def get_user_requests():
+    user_id = request.args.get('userId')
+    limit = request.args.get('limit')
+    return h.get_user_requests(user_id, limit)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()
