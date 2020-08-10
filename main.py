@@ -10,7 +10,7 @@ h = Helper()
 
 @app.route('/')
 def index():
-    return 'Hello World'
+    return 'Welcome to certification services main page!'
 
 
 @app.route('/auth/<login>/<password>', methods=['GET'])
