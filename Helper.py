@@ -54,6 +54,8 @@ class Helper:
                            "request_id": request_id})
 
     def get_user_requests(self, user_id, limit):
+        if not limit:
+            limit = 25
         records_active = []
         records_closed = []
         records_new, columns = self.ph.get_requests(user_id, limit, ['new', 'in progress'])

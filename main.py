@@ -37,7 +37,7 @@ def post_request():
     return h.request_registration(request_dict)
 
 
-@app.route('/requests/getByUser', methods=['GET'])
+@app.route('/requests/getByUserId', methods=['GET'])
 def get_user_requests():
     user_id = request.args.get('userId')
     limit = request.args.get('limit')
