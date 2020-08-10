@@ -1,4 +1,5 @@
 import json
+import os
 import uuid
 
 import psycopg2
@@ -9,9 +10,14 @@ class PsqlHelper():
     @staticmethod
     def __execute_query(query, commit=False, is_return=False):
         records = ''
-        conn = psycopg2.connect(dbname='dbojgd8kb7avuc', user='jpsarrqiurvslr',
-                                password='9a473bf4a600d9abb06e8550c0e1aaa23fb7b09762113bcb8c6504e504d3e93e',
-                                host='ec2-34-239-241-25.compute-1.amazonaws.com')
+        try:
+            conn = psycopg2.connect(os.inviron['DATABASE'], sslmode='require')
+            print('Connect via os')
+        except AttributeError:
+            conn = psycopg2.connect(dbname='dbojgd8kb7avuc', user='jpsarrqiurvslr',
+                                    password='9a473bf4a600d9abb06e8550c0e1aaa23fb7b09762113bcb8c6504e504d3e93e',
+                                    host='ec2-34-239-241-25.compute-1.amazonaws.com')
+            print('Connect via full url')
         cursor = conn.cursor()
         cursor.execute(query)
         if not commit or is_return:
