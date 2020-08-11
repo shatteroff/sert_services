@@ -61,16 +61,26 @@ class Helper:
         records_new, columns = self.ph.get_requests(user_id, limit, ['new', 'in progress'])
         records_old, columns = self.ph.get_requests(user_id, limit, ['closed'])
         for record in records_new:
-            request_dict = {}
+            request_data_dict = {}
             for i in range(len(columns) - 1):
-                request_dict.update({columns[i]: record[i]})
-            request_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
-            records_active.append(request_dict)
+                request_data_dict.update({columns[i]: record[i]})
+            request_data_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
+            records_active.append(request_data_dict)
         for record in records_old:
-            request_dict = {}
+            request_data_dict = {}
             for i in range(len(columns) - 1):
-                request_dict.update({columns[i]: record[i]})
-            request_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
-            records_closed.append(request_dict)
-        json_to_send = {"active": records_active, "closed": records_closed}
+                request_data_dict.update({columns[i]: record[i]})
+            request_data_dict.update({"date": record[len(columns) - 1].strftime('%Y-%m-%d')})
+            records_closed.append(request_data_dict)
+        requests_dict = {}
+        if records_active:
+            active_dict = {"active": records_active}
+            requests_dict.update(active_dict)
+        if records_closed:
+            closed_dict = {"closed": records_closed}
+            requests_dict.update(closed_dict)
+        if requests_dict:
+            json_to_send = {"requests": requests_dict}
+        else:
+            json_to_send = {"requests": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
