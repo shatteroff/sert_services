@@ -4,8 +4,8 @@ from PsqlHelper import PsqlHelper
 ph = PsqlHelper()
 h = Helper()
 # test PsqlHelper.insert_job
-# req_id = ph.insert_request('1821f722-8f2e-449a-b37e-b10f2ec07039', 'email')
-# print(ph.insert_job('1821f722-8f2e-449a-b37e-b10f2ec07039', True, True, True, 'Труба', 1234, 100, 200, req_id,
+# req_id = ph.insert_request('a8bf9f69-98af-4cd1-a19a-20cf36d223d2', 'email')
+# print(ph.insert_job('a8bf9f69-98af-4cd1-a19a-20cf36d223d2', True, True, True, 'Труба', 1234, 100, 300, req_id,
 #                     "Описание"))
 
 # test Helper.job_registration
@@ -21,4 +21,10 @@ h = Helper()
 # print(h.get_user_jobs('1821f722-8f2e-449a-b37e-b10f2ec07039',None))
 
 # test Helper.get_user_requests
-# print(h.get_user_requests('1821f722-8f2e-449a-b37e-b10f2ec07039', None))
+# print(h.get_user_requests('a8bf9f69-98af-4cd1-a19a-20cf36d223d2', None))
+
+# test PsqlHelper.get_margins
+# print(ph.get_margins())
+
+# test Helper.get_leader_board
+print(h.get_leader_board(1))

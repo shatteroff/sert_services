@@ -117,3 +117,16 @@ class Helper:
         else:
             json_to_send = {"jobs": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
+
+    def get_leader_board(self,limit):
+        if not limit:
+            limit = 20
+        records, columns = self.ph.get_margins(limit)
+        margin_list = []
+        if records:
+            for record in records:
+                margin_list.append({key: value for key, value in zip(columns, record)})
+            json_to_send = {"leaderboard": margin_list}
+        else:
+            json_to_send = {"leaderboard": "empty"}
+        return json.dumps(json_to_send, ensure_ascii=False)

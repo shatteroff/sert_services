@@ -150,3 +150,11 @@ class PsqlHelper:
                 order by insert_dt desc limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
+
+    def get_margins(self,top_count):
+        query = f"""select m.*,u.name,u.alias from margin m
+                join users u on m.user_id = u.id
+                where margin>0
+                order by margin desc limit {top_count}"""
+        records,columns = self.__execute_query(query,is_columns_name=True)
+        return records,columns

@@ -57,6 +57,12 @@ def get_user_jobs():
     return h.get_user_jobs(user_id, limit)
 
 
+@app.route('/leaderboard/getLeaders', methods=['GET'])
+def get_leaderboard():
+    limit = request.args.get('limit')
+    return h.get_leader_board(limit)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()
