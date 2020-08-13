@@ -84,3 +84,18 @@ class Helper:
         else:
             json_to_send = {"requests": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
+
+    def job_registration(self, job_dict):
+        user_id = job_dict.get('user_id')
+        request_id = job_dict.get('request_id')
+        c_agreement = job_dict.get('customer_agreement')
+        a_agreement = job_dict.get('agent_agreement')
+        acts = job_dict.get('acts')
+        title = job_dict.get('title')
+        description = job_dict.get('description')
+        custom_code = job_dict.get('custom_code')
+        client_price = job_dict.get('client_price')
+        cost_price = job_dict.get('cost_price')
+        job_id = self.ph.insert_job(user_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
+                                    cost_price, request_id, description)
+        return json.dumps({"jobs": {"job_id": job_id}})

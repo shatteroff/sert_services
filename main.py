@@ -44,6 +44,12 @@ def get_user_requests():
     return h.get_user_requests(user_id, limit)
 
 
+@app.route('jobs/post', methods=['POST'])
+def post_job():
+    job_dict = request.get_json()
+    return h.job_registration(job_dict)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()

@@ -126,3 +126,20 @@ class PsqlHelper:
                 order by insert_dt desc limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
+
+    def insert_job(self, user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price,
+                   request_id=None, description=None):
+        columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts', 'title', 'custom_code', 'client_price',
+                   'cost_price']
+        values = [user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price]
+        if request_id:
+            columns.append('request_id')
+            values.append(request_id)
+        if description:
+            columns.append('description')
+            values.append(description)
+        values = list(f"'{v}'" for v in values)
+        query = f"INSERT INTO public.projects({','.join(columns)}) VALUES ({','.join(values)}) returning id"
+        print(query)
+        records = self.__execute_query(query, commit=True, is_return=True)
+        return records[0][0]
