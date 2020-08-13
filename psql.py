@@ -13,3 +13,12 @@ h = Helper()
 #             'acts': True, 'title': 'Тест работ', 'custom_code': 1234, 'client_price': 100, 'cost_price': 200}
 # print(h.job_registration(job_dict))
 
+# test PsqlHelper.get_jobs
+# records, columns = ph.get_jobs('1821f722-8f2e-449a-b37e-b10f2ec07039', 2)
+# print(records, columns)
+
+# test Helper.get_user_jobs
+# print(h.get_user_jobs('1821f722-8f2e-449a-b37e-b10f2ec07039',None))
+
+# test Helper.get_user_requests
+# print(h.get_user_requests('1821f722-8f2e-449a-b37e-b10f2ec07039', None))
