@@ -27,4 +27,10 @@ h = Helper()
 # print(ph.get_margins())
 
 # test Helper.get_leader_board
-print(h.get_leader_board(1))
+# print(h.get_leader_board(1))
+
+# test Psqlhelper.insert_notification_token
+# ph.insert_notification_token('056a062c-6e96-419d-9092-8436564031fa','eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJiMDhmODZhZi0zNWRhLTQ4ZjItOGZhYi1jZWYzOTA0NjYwYmQifQ.-xN_h82PHVTCMA9vdoHrcZxH-x5mb11y1537t3rGzcM')
+
+# test PsqlHelper.update_notification_token
+ph.update_notification_token('056a062c-6e96-419d-9092-8436564031fa','000000iOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJiMDhmODZhZi0zNWRhLTQ4ZjItOGZhYi1jZWYzOTA0NjYwYmQifQ.-xN_h82PHVTCMA9vdoHrcZxH-x5mb11y1537t3rGzcM')

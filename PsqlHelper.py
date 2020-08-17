@@ -128,10 +128,13 @@ class PsqlHelper:
         return records, columns
 
     def insert_job(self, user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price,
-                   request_id=None, description=None):
+                   request_id=None, description=None, job_id=None):
         columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts', 'title', 'custom_code', 'client_price',
                    'cost_price']
         values = [user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price]
+        if job_id:
+            columns.append('id')
+            values.append(job_id)
         if request_id:
             columns.append('request_id')
             values.append(request_id)
@@ -151,10 +154,19 @@ class PsqlHelper:
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
-    def get_margins(self,top_count):
+    def get_margins(self, top_count):
         query = f"""select m.*,u.name,u.alias from margin m
                 join users u on m.user_id = u.id
                 where margin>0
                 order by margin desc limit {top_count}"""
-        records,columns = self.__execute_query(query,is_columns_name=True)
-        return records,columns
+        records, columns = self.__execute_query(query, is_columns_name=True)
+        return records, columns
+
+    def insert_notification_token(self, user_id, token):
+        query = f"""insert into public.tokens (user_id,notification) VALUES ('{user_id}','{token}')"""
+        self.__execute_query(query, commit=True)
+
+    def update_notification_token(self, user_id, token):
+        query = f"""update public.tokens set notification = '{token}', update_dt = CURRENT_TIMESTAMP
+                where user_id = '{user_id}'"""
+        self.__execute_query(query, commit=True)

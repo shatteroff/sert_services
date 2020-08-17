@@ -63,6 +63,18 @@ def get_leaderboard():
     return h.get_leader_board(limit)
 
 
+@app.route('/tokens/notification/post', methods=['POST'])
+def set_token():
+    token_dict = request.get_json()
+    return h.set_token(token_dict)
+
+
+@app.route('/tokens/notification/post', methods=['POST'])
+def update_token():
+    token_dict = request.get_json()
+    return h.update_token(token_dict)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()

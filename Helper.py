@@ -86,6 +86,7 @@ class Helper:
         return json.dumps(json_to_send, ensure_ascii=False)
 
     def job_registration(self, job_dict):
+        job_id = job_dict.get('job_id')
         user_id = job_dict.get('user_id')
         request_id = job_dict.get('request_id')
         c_agreement = job_dict.get('customer_agreement')
@@ -97,7 +98,7 @@ class Helper:
         client_price = job_dict.get('client_price')
         cost_price = job_dict.get('cost_price')
         job_id = self.ph.insert_job(user_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
-                                    cost_price, request_id, description)
+                                    cost_price, request_id, description, job_id)
         return json.dumps({"job_registration": {"job_id": job_id}})
 
     def get_user_jobs(self, user_id, limit):
@@ -118,7 +119,7 @@ class Helper:
             json_to_send = {"jobs": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
 
-    def get_leader_board(self,limit):
+    def get_leader_board(self, limit):
         if not limit:
             limit = 20
         records, columns = self.ph.get_margins(limit)
@@ -130,3 +131,15 @@ class Helper:
         else:
             json_to_send = {"leaderboard": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
+
+    def set_token(self, token_dict):
+        user_id = token_dict.get('user_id')
+        token = token_dict.get('token')
+        self.ph.insert_notification_token(user_id, token)
+        return json.dumps({"token_registration": "ok"})
+
+    def update_token(self, token_dict):
+        user_id = token_dict.get('user_id')
+        token = token_dict.get('token')
+        self.ph.update_notification_token(user_id, token)
+        return json.dumps({"token_update": "ok"})
