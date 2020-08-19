@@ -2,7 +2,7 @@ import json
 
 import psycopg2
 
-from Config_local import Config
+from Config import Config
 
 
 class PsqlHelper:

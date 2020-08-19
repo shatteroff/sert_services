@@ -40,7 +40,7 @@ def post_request():
 @app.route('/requests/updateStatus', methods=['PUT'])
 def update_request_status():
     request_dict = request.get_json()
-    h.update_request_status(request_dict)
+    return h.update_request_status(request_dict)
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
@@ -82,5 +82,5 @@ def update_token():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
-    # app.run()
+    # app.run(host='0.0.0.0')
+    app.run()
