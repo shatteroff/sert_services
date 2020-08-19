@@ -1,11 +1,13 @@
 import json
 import uuid
 
+from FirebaseHelper import FirebaseHelper
 from PsqlHelper import PsqlHelper
 
 
 class Helper:
     ph = PsqlHelper()
+    fbh = FirebaseHelper()
 
     def user_registration(self, user_dict):
         phone = user_dict.get('phone')
@@ -89,7 +91,13 @@ class Helper:
         user_id = request_dict.get('user_id')
         request_id = request_dict.get('request_id')
         status = int(request_dict.get('status'))
+        notification = bool(request_dict.get('notify'))
         self.ph.update_request_status(user_id, request_id, status)
+        if notification:
+            client_token = self.ph.get_notification_token(user_id)
+            title = 'Статус Вашего запроса был изменен'
+            body = 'Зайдите в приложение, чтобы узнать подробности'
+            message_id = self.fbh.send_notification(client_token, title, body)
         return json.dumps({"request_update": "ok"})
 
     def job_registration(self, job_dict):

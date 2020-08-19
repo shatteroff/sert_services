@@ -1,8 +1,8 @@
 import json
-import os
-import uuid
 
 import psycopg2
+
+from Config_local import Config
 
 
 class PsqlHelper:
@@ -10,14 +10,7 @@ class PsqlHelper:
     @staticmethod
     def __execute_query(query, commit=False, is_return=False, is_columns_name=False):
         records = ''
-        try:
-            conn = psycopg2.connect(os.inviron['DATABASE'], sslmode='require')
-            print('Connect via os')
-        except AttributeError:
-            conn = psycopg2.connect(dbname='dbojgd8kb7avuc', user='jpsarrqiurvslr',
-                                    password='9a473bf4a600d9abb06e8550c0e1aaa23fb7b09762113bcb8c6504e504d3e93e',
-                                    host='ec2-34-239-241-25.compute-1.amazonaws.com')
-            print('Connect via full url')
+        conn = psycopg2.connect(Config.psql_url, sslmode='require')
         cursor = conn.cursor()
         cursor.execute(query)
         if not commit or is_return:
@@ -175,3 +168,9 @@ class PsqlHelper:
         query = f"""update public.tokens set notification = '{token}', update_dt = CURRENT_TIMESTAMP
                 where user_id = '{user_id}'"""
         self.__execute_query(query, commit=True)
+
+    def get_notification_token(self, user_id):
+        query = f"""select notification from public.tokens
+                where user_id = '{user_id}'"""
+        records = self.__execute_query(query)
+        return records[0][0]
