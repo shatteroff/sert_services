@@ -96,8 +96,8 @@ class PsqlHelper:
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
                        validity_period=None, add_info=None):
-        columns = ['user_id', 'status', 'request_type']
-        values = [user_id, 'new', request_type]
+        columns = ['user_id', 'request_type']
+        values = [user_id, request_type]
         if custom_code:
             columns.append('custom_code')
             values.append(custom_code)
@@ -126,6 +126,11 @@ class PsqlHelper:
                 order by insert_dt desc limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
+
+    def update_request_status(self, user_id, request_id, status):
+        query = f"""update public.requests set status = {status}
+                where user_id='{user_id}' and id = '{request_id}'"""
+        self.__execute_query(query, commit=True)
 
     def insert_job(self, user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price,
                    request_id=None, description=None, job_id=None):

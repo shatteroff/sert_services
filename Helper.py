@@ -50,7 +50,7 @@ class Helper:
         add_info = request_dict.get('add_info')
         request_id = self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period,
                                             add_info)
-        return json.dumps({"registration": "ok",
+        return json.dumps({"request_registration": "ok",
                            "request_id": request_id})
 
     def get_user_requests(self, user_id, limit):
@@ -58,8 +58,8 @@ class Helper:
             limit = 25
         records_active = []
         records_closed = []
-        records_new, columns = self.ph.get_requests(user_id, limit, ['new', 'in progress'])
-        records_old, columns = self.ph.get_requests(user_id, limit, ['closed'])
+        records_new, columns = self.ph.get_requests(user_id, limit, [0, 1, 2])
+        records_old, columns = self.ph.get_requests(user_id, limit, [999])
         for record in records_new:
             request_data_dict = {}
             for i in range(len(columns) - 1):
@@ -84,6 +84,13 @@ class Helper:
         else:
             json_to_send = {"requests": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
+
+    def update_request_status(self, request_dict):
+        user_id = request_dict.get('user_id')
+        request_id = request_dict.get('request_id')
+        status = int(request_dict.get('status'))
+        self.ph.update_request_status(user_id, request_id, status)
+        return json.dumps({"request_update": "ok"})
 
     def job_registration(self, job_dict):
         job_id = job_dict.get('job_id')

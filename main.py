@@ -37,6 +37,12 @@ def post_request():
     return h.request_registration(request_dict)
 
 
+@app.route('/requests/updateStatus', methods=['PUT'])
+def update_request_status():
+    request_dict = request.get_json()
+    h.update_request_status(request_dict)
+
+
 @app.route('/requests/getByUserId', methods=['GET'])
 def get_user_requests():
     user_id = request.args.get('userId')
@@ -69,7 +75,7 @@ def set_token():
     return h.set_token(token_dict)
 
 
-@app.route('/tokens/notification/post', methods=['POST'])
+@app.route('/tokens/notification/post', methods=['PUT'])
 def update_token():
     token_dict = request.get_json()
     return h.update_token(token_dict)

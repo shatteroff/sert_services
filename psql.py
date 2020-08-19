@@ -3,6 +3,15 @@ from PsqlHelper import PsqlHelper
 
 ph = PsqlHelper()
 h = Helper()
+
+# test PsqlHelper.update_request_status
+# ph.update_request_status('42ce88a7-d328-4e68-b4b0-3f9a9593cc8a', '0c03c3cf-1b7e-4dab-b5e3-7308c72b2881', 1)
+
+# test Helper.update_request_status
+# request_dict = {"user_id": '42ce88a7-d328-4e68-b4b0-3f9a9593cc8a', "request_id": '0c03c3cf-1b7e-4dab-b5e3-7308c72b2881',
+#                 "status": 999}
+# print(h.update_request_status(request_dict))
+
 # test PsqlHelper.insert_job
 # req_id = ph.insert_request('a8bf9f69-98af-4cd1-a19a-20cf36d223d2', 'email')
 # print(ph.insert_job('a8bf9f69-98af-4cd1-a19a-20cf36d223d2', True, True, True, 'Труба', 1234, 100, 300, req_id,
@@ -33,4 +42,4 @@ h = Helper()
 # ph.insert_notification_token('056a062c-6e96-419d-9092-8436564031fa','eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJiMDhmODZhZi0zNWRhLTQ4ZjItOGZhYi1jZWYzOTA0NjYwYmQifQ.-xN_h82PHVTCMA9vdoHrcZxH-x5mb11y1537t3rGzcM')
 
 # test PsqlHelper.update_notification_token
-ph.update_notification_token('056a062c-6e96-419d-9092-8436564031fa','000000iOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJiMDhmODZhZi0zNWRhLTQ4ZjItOGZhYi1jZWYzOTA0NjYwYmQifQ.-xN_h82PHVTCMA9vdoHrcZxH-x5mb11y1537t3rGzcM')
+# ph.update_notification_token('056a062c-6e96-419d-9092-8436564031fa','000000iOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJiMDhmODZhZi0zNWRhLTQ4ZjItOGZhYi1jZWYzOTA0NjYwYmQifQ.-xN_h82PHVTCMA9vdoHrcZxH-x5mb11y1537t3rGzcM')
