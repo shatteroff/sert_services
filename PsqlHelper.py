@@ -1,13 +1,26 @@
 import json
-
+from functools import wraps
+import time
 import psycopg2
 
-from Config import Config
+from Config_local import Config
+
+
+def exec_time(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        start_time = time.time()
+        data = func(*args, **kwargs)
+        print(f'Query execution time ', int((time.time() - start_time) * 1000), 'ms')
+        return data
+
+    return wrapped
 
 
 class PsqlHelper:
 
     @staticmethod
+    @exec_time
     def __execute_query(query, commit=False, is_return=False, is_columns_name=False):
         records = ''
         conn = psycopg2.connect(Config.psql_url, sslmode='require')
@@ -24,6 +37,23 @@ class PsqlHelper:
             return records, columns
         else:
             return records
+
+    def get_user_id(self, login, password):
+        query = 'Select * from public.users'
+        try:
+            login = int(login)
+            query += f' where phone = {login}'
+        except ValueError:
+            query += f" where email = '{login}'"
+        query += f" and password = '{password}'"
+        records = self.__execute_query(query)
+        if len(records) > 1:
+            return 1
+        elif len(records) == 0:
+            return 0
+        else:
+            id = records[0][0]
+            return id
 
     def get_login(self, login, password):
         query = 'Select * from public.users'
@@ -112,11 +142,13 @@ class PsqlHelper:
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
 
-    def get_requests(self, user_id, top_count, status_list):
+    def get_requests(self, top_count, status_list, user_id=None, request_type='email'):
         statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select * from public.requests
-                where user_id = '{user_id}' and status in ({statuses}) and request_type = 'app'
-                order by insert_dt desc limit {top_count}"""
+                where status in ({statuses}) and request_type = '{request_type}'"""
+        if user_id:
+            query += f""" and user_id = '{user_id}'"""
+        query += f"""order by insert_dt desc limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
@@ -161,7 +193,16 @@ class PsqlHelper:
         return records, columns
 
     def insert_notification_token(self, user_id, token):
-        query = f"""insert into public.tokens (user_id,notification) VALUES ('{user_id}','{token}')"""
+        query = f"""DO
+$do$
+BEGIN
+IF EXISTS (SELECT * FROM public.tokens where user_id='{user_id}') THEN
+update public.tokens set notification = '{token}',update_dt = CURRENT_TIMESTAMP where user_id='{user_id}';
+else insert into public.tokens (user_id,notification) Values ('{user_id}','{token}');
+END IF;
+END
+$do$"""
+        # query = f"""insert into public.tokens (user_id,notification) VALUES ('{user_id}','{token}')"""
         self.__execute_query(query, commit=True)
 
     def update_notification_token(self, user_id, token):
@@ -174,3 +215,10 @@ class PsqlHelper:
                 where user_id = '{user_id}'"""
         records = self.__execute_query(query)
         return records[0][0]
+
+    def get_user_role(self, user_id):
+        query = f"""select role from roles
+                where user_id = '{user_id}'"""
+        records = self.__execute_query(query)
+        if records:
+            return records[0][0]

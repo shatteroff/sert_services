@@ -1,6 +1,8 @@
 import json
 import uuid
 
+import jwt
+
 from FirebaseHelper import FirebaseHelper
 from PsqlHelper import PsqlHelper
 
@@ -8,6 +10,23 @@ from PsqlHelper import PsqlHelper
 class Helper:
     ph = PsqlHelper()
     fbh = FirebaseHelper()
+
+    @staticmethod
+    def get_token(user_id, secret_key):
+        token = jwt.encode({
+            'user_id': user_id
+        },
+            secret_key)
+        return token
+
+    def user_login(self, login, password, secret_key):
+        user_id = self.ph.get_user_id(login, password)
+        if user_id == 1:
+            return json.dumps({"response": "Error"}), 401
+        elif user_id == 0:
+            return json.dumps({"response": "Empty data"}), 401
+        else:
+            return json.dumps(({'token': self.get_token(user_id, secret_key).decode('utf-8')}))
 
     def user_registration(self, user_dict):
         phone = user_dict.get('phone')
@@ -33,7 +52,7 @@ class Helper:
                 self.ph.insert_user(phone, email, alias, name, password)
                 return json.dumps({"registration": "ok"})
             else:
-                return 'Please, fill in required fields', 500
+                return 'Please, fill in all required fields', 500
 
     def get_id(self, id_type):
         ids = self.ph.get_all_ids(id_type)
@@ -55,13 +74,13 @@ class Helper:
         return json.dumps({"request_registration": "ok",
                            "request_id": request_id})
 
-    def get_user_requests(self, user_id, limit):
+    def get_user_requests(self, limit, user_id=None):
         if not limit:
             limit = 25
         records_active = []
         records_closed = []
-        records_new, columns = self.ph.get_requests(user_id, limit, [0, 1, 2])
-        records_old, columns = self.ph.get_requests(user_id, limit, [999])
+        records_new, columns = self.ph.get_requests(limit, [0, 1, 2], user_id=user_id)
+        records_old, columns = self.ph.get_requests(limit, [999], user_id=user_id)
         for record in records_new:
             request_data_dict = {}
             for i in range(len(columns) - 1):
@@ -77,9 +96,11 @@ class Helper:
         requests_dict = {}
         if records_active:
             active_dict = {"active": records_active}
+            print(len(records_active))
             requests_dict.update(active_dict)
         if records_closed:
             closed_dict = {"closed": records_closed}
+            print(len(records_closed))
             requests_dict.update(closed_dict)
         if requests_dict:
             json_to_send = {"requests": requests_dict}
@@ -96,8 +117,8 @@ class Helper:
         if notification:
             client_token = self.ph.get_notification_token(user_id)
             title = 'Статус Вашего запроса был изменен'
-            body = 'Зайдите в приложение, чтобы узнать подробности'
-            message_id = self.fbh.send_notification(client_token, title, body)
+            # body = 'Зайдите в приложение, чтобы узнать подробности'
+            message_id = self.fbh.send_notification(client_token, title, request_id)
         return json.dumps({"request_update": "ok"})
 
     def job_registration(self, job_dict):
