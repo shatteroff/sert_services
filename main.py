@@ -24,9 +24,9 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             user_id = token_data.get('user_id')
-            start_time = time.time()
+            # start_time = time.time()
             data = func(user_id)
-            print('Execution time ', int((time.time() - start_time) * 1000))
+            # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
         except jwt.exceptions.PyJWTError:
             return jsonify({'Authorization error': 'Invalid token'}), 403

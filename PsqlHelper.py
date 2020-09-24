@@ -3,7 +3,10 @@ from functools import wraps
 import time
 import psycopg2
 
-from Config_local import Config
+try:
+    from Config import Config
+except:
+    from Config_local import Config
 
 
 def exec_time(func):
@@ -142,7 +145,7 @@ class PsqlHelper:
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
 
-    def get_requests(self, top_count, status_list, user_id=None, request_type='email'):
+    def get_requests(self, top_count, status_list, user_id=None, request_type='app'):
         statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select * from public.requests
                 where status in ({statuses}) and request_type = '{request_type}'"""

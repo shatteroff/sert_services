@@ -3,7 +3,10 @@ import json
 import firebase_admin
 from firebase_admin import credentials, messaging
 
-from Config import Config
+try:
+    from Config import Config
+except:
+    from Config_local import Config
 
 
 class FirebaseHelper:
