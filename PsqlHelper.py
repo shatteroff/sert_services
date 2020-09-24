@@ -1,13 +1,27 @@
 import json
+import time
+from functools import wraps
 
 import psycopg2
 
 from Config import Config
 
 
+def exec_time(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        start_time = time.time()
+        data = func(*args, **kwargs)
+        print(f'Query execution time ', int((time.time() - start_time) * 1000), 'ms')
+        return data
+
+    return wrapped
+
+
 class PsqlHelper:
 
     @staticmethod
+    @exec_time
     def __execute_query(query, commit=False, is_return=False, is_columns_name=False):
         records = ''
         conn = psycopg2.connect(Config.psql_url, sslmode='require')
@@ -161,7 +175,16 @@ class PsqlHelper:
         return records, columns
 
     def insert_notification_token(self, user_id, token):
-        query = f"""insert into public.tokens (user_id,notification) VALUES ('{user_id}','{token}')"""
+        query = f"""DO
+    $do$
+    BEGIN
+    IF EXISTS (SELECT * FROM public.tokens where user_id='{user_id}') THEN
+    update public.tokens set notification = '{token}',update_dt = CURRENT_TIMESTAMP where user_id='{user_id}';
+    else insert into public.tokens (user_id,notification) Values ('{user_id}','{token}');
+    END IF;
+    END
+    $do$"""
+        # query = f"""insert into public.tokens (user_id,notification) VALUES ('{user_id}','{token}')"""
         self.__execute_query(query, commit=True)
 
     def update_notification_token(self, user_id, token):
