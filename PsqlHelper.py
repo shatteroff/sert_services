@@ -180,10 +180,12 @@ class PsqlHelper:
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
 
-    def get_jobs(self, user_id, top_count):
-        query = f"""select * from public.projects
-                where user_id = '{user_id}'
-                order by insert_dt desc limit {top_count}"""
+    def get_jobs(self, top_count, user_id=None):
+        query = f"select * from public.projects"
+        if user_id:
+            query += f" where user_id = '{user_id}'"
+        query += f" order by insert_dt desc limit {top_count}"""
+        # print(query)
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 

@@ -34,9 +34,9 @@ class Helper:
             try:
                 phone = int(phone)
                 if len(str(phone)) != 10:
-                    return 'Wrong phone format', 500
+                    return json.dumps({"registration": {"error": "wrong phone format"}}), 500
             except ValueError:
-                return 'Value for "phone" must be integer', 500
+                return json.dumps({"registration": {"error": 'value for "phone" must be integer'}}), 500
         email = user_dict.get('email')
         alias = user_dict.get('alias')
         name = user_dict.get('name')
@@ -52,7 +52,7 @@ class Helper:
                 self.ph.insert_user(phone, email, alias, name, password)
                 return json.dumps({"registration": "ok"})
             else:
-                return 'Please, fill in all required fields', 500
+                return json.dumps({"registration": {"error": "please, fill in all required fields"}}), 500
 
     def get_id(self, id_type):
         ids = self.ph.get_all_ids(id_type)
@@ -137,10 +137,10 @@ class Helper:
                                     cost_price, request_id, description, job_id)
         return json.dumps({"job_registration": {"job_id": job_id}})
 
-    def get_user_jobs(self, user_id, limit):
+    def get_jobs(self, limit, user_id=None):
         if not limit:
             limit = 25
-        records, columns = self.ph.get_jobs(user_id, limit)
+        records, columns = self.ph.get_jobs(limit, user_id=user_id)
         job_data_dict = {}
         job_list = []
         for record in records:

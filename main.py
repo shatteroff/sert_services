@@ -60,37 +60,41 @@ def registration():
 
 
 @app.route('/getId', methods=['GET'])
-def get_id():
+@check_for_token
+def get_id(*args):
     id_type = request.args.get('type')
     if id_type:
         return h.get_id(id_type)
 
 
 @app.route('/requests/post', methods=['POST'])
-def post_request():
+@check_for_token
+def post_request(*args):
     request_dict = request.get_json()
     return h.request_registration(request_dict)
 
 
 @app.route('/requests/updateStatus', methods=['PUT'])
-def update_request_status():
-    request_dict = request.get_json()
-    return h.update_request_status(request_dict)
+@check_for_token
+def update_request_status(auth_user_id):
+    if ph.get_user_role(auth_user_id) == 'admin':
+        request_dict = request.get_json()
+        return h.update_request_status(request_dict)
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
 @check_for_token
-def get_user_requests(user_id):
+def get_user_requests(auth_user_id):
     # token = request.headers.get(auth_header_str)
     # token_data = h.check_token(token, app.config['SECRET_KEY'])
     # if token_data:
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
-    if ph.get_user_role(user_id) == 'admin':
-        return h.get_user_requests(limit)
-    else:
+    if ph.get_user_role(auth_user_id) == 'admin':
         user_id = request.args.get('userId')
-    return h.get_user_requests(limit, user_id=user_id)
+        return h.get_user_requests(limit, user_id=user_id)
+    else:
+        return h.get_user_requests(limit, user_id=auth_user_id)
 
 
 # else:
@@ -98,26 +102,35 @@ def get_user_requests(user_id):
 
 
 @app.route('/jobs/post', methods=['POST'])
-def post_job():
+@check_for_token
+def post_job(*args):
     job_dict = request.get_json()
     return h.job_registration(job_dict)
 
 
 @app.route('/jobs/getByUserId', methods=['GET'])
-def get_user_jobs():
-    user_id = request.args.get('userId')
+@check_for_token
+def get_user_jobs(auth_user_id):
+    # user_id = request.args.get('userId')
     limit = request.args.get('limit')
-    return h.get_user_jobs(user_id, limit)
+    # return h.get_jobs(limit, user_id=user_id)
+    if ph.get_user_role(auth_user_id) == 'admin':
+        user_id = request.args.get('userId')
+        return h.get_jobs(limit, user_id=user_id)
+    else:
+        return h.get_jobs(limit, user_id=auth_user_id)
 
 
 @app.route('/leaderboard/getLeaders', methods=['GET'])
-def get_leaderboard():
+@check_for_token
+def get_leaderboard(*args):
     limit = request.args.get('limit')
     return h.get_leader_board(limit)
 
 
 @app.route('/tokens/notification/post', methods=['POST'])
-def set_token():
+@check_for_token
+def set_token(*args):
     token_dict = request.get_json()
     return h.set_token(token_dict)
 
