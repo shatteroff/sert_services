@@ -21,6 +21,7 @@ def exec_time(func):
 
 
 class PsqlHelper:
+    empty_request_type = 'empty_type'
 
     @staticmethod
     @exec_time
@@ -57,6 +58,24 @@ class PsqlHelper:
         else:
             id = records[0][0]
             return id
+
+    def get_user_info(self, login, password):
+        query = """Select u.id,r.role from public.users u
+                left join public.roles r on u.id=r.user_id"""
+        try:
+            login = int(login)
+            query += f' where phone = {login}'
+        except ValueError:
+            query += f" where email = '{login}'"
+        query += f" and password = '{password}'"
+        records = self.__execute_query(query)
+        if len(records) > 1:
+            return 1
+        elif len(records) == 0:
+            return 0
+        else:
+            user_info = records[0]
+            return user_info
 
     def get_login(self, login, password):
         query = 'Select * from public.users'
@@ -120,6 +139,14 @@ class PsqlHelper:
             ids.append(record[0])
         return ids
 
+    def get_empty_request_id(self, user_id):
+        query = f"select id from public.requests where user_id = '{user_id}' and request_type = '{self.empty_request_type}'"
+        records = self.__execute_query(query)
+        if records:
+            return records[0][0]
+        else:
+            return None
+
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
                        validity_period=None, add_info=None):
         columns = ['user_id', 'request_type']
@@ -144,6 +171,38 @@ class PsqlHelper:
         print(query)
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
+
+    def registration_request(self, user_id):
+        columns = ['user_id', 'request_type']
+        values = [user_id, self.empty_request_type]
+        values = list(f"'{v}'" for v in values)
+        query = f"INSERT INTO public.requests({','.join(columns)}) VALUES ({','.join(values)}) returning id"
+        records = self.__execute_query(query, commit=True, is_return=True)
+        return records[0][0]
+
+    def update_request(self, request_id, request_type, custom_code=None, product_type=None, doc_type=None,
+                       validity_period=None, add_info=None):
+        columns = ['request_type']
+        values = [request_type]
+        if custom_code:
+            columns.append('custom_code')
+            values.append(custom_code)
+        if product_type:
+            columns.append('product_type')
+            values.append(product_type)
+        if doc_type:
+            columns.append('doc_type')
+            values.append(doc_type)
+        if validity_period:
+            columns.append('validity_period')
+            values.append(validity_period)
+        if add_info:
+            columns.append('add_info')
+            values.append(add_info)
+        sets = (f"{column}='{values}'" for column, values in zip(columns, values))
+        query = f"update public.requests set {','.join(sets)} where id = {request_id}"
+        # print(query)
+        self.__execute_query(query, commit=True)
 
     def get_requests(self, top_count, status_list, user_id=None, request_type='app'):
         statuses = ','.join(f"'{status}'" for status in status_list)

@@ -12,21 +12,30 @@ class Helper:
     fbh = FirebaseHelper()
 
     @staticmethod
-    def get_token(user_id, secret_key):
-        token = jwt.encode({
-            'user_id': user_id
-        },
+    def get_token(payload, secret_key):
+        token = jwt.encode(
+            payload,
             secret_key)
         return token
 
     def user_login(self, login, password, secret_key):
-        user_id = self.ph.get_user_id(login, password)
-        if user_id == 1:
-            return json.dumps({"response": "Error"}), 401
-        elif user_id == 0:
-            return json.dumps({"response": "Empty data"}), 401
+        payload = {}
+        user_info = self.ph.get_user_id(login, password)
+        if user_info == 1:
+            return json.dumps({"login": "Error"}), 401
+        elif user_info == 0:
+            return json.dumps({"login": "Non-existent user"}), 401
         else:
-            return json.dumps(({'token': self.get_token(user_id, secret_key).decode('utf-8')}))
+            user_id = user_info[0]
+            payload.update({'user_id': user_id})
+            if user_info[1]:
+                payload.update({'role': user_info[1]})
+            request_id = self.ph.get_empty_request_id(user_id)
+            if not request_id:
+                request_id = self.ph.registration_request(user_id)
+            payload.update({'request_id': request_id})
+
+            return json.dumps(({'token': self.get_token(payload, secret_key).decode('utf-8')}))
 
     def user_registration(self, user_dict):
         phone = user_dict.get('phone')
@@ -63,16 +72,17 @@ class Helper:
 
     def request_registration(self, request_dict):
         user_id = request_dict.get('user_id')
+        request_id = request_dict.get('request_id')
         request_type = request_dict.get('request_type')
         custom_code = request_dict.get('custom_code')
         product_type = request_dict.get('product_type')
         doc_type = request_dict.get('doc_type')
         validity_period = request_dict.get('validity_period')
         add_info = request_dict.get('add_info')
-        request_id = self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period,
-                                            add_info)
+        self.ph.update_request(request_id, request_type, custom_code, product_type, doc_type, validity_period, add_info)
+        request_new_id = self.ph.registration_request(user_id)
         return json.dumps({"request_registration": "ok",
-                           "request_id": request_id})
+                           "request_id": request_new_id})
 
     def get_user_requests(self, limit, user_id=None):
         if not limit:
