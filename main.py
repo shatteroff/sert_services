@@ -4,9 +4,12 @@ from functools import wraps
 import jwt
 from flask import Flask, request, jsonify
 
-from Config_local import Config
 from Helper import Helper
 from PsqlHelper import PsqlHelper
+try:
+    from Config import Config
+except:
+    from Config_local import Config
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = Config.SECRET_KEY
