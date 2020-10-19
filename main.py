@@ -47,7 +47,7 @@ def auth(login, password):
     return ph.get_login(login, password)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login/post', methods=['POST'])
 def login():
     login_dict = request.get_json()
     user_login = login_dict.get('login')
@@ -73,8 +73,9 @@ def get_id(*args):
 
 @app.route('/requests/post', methods=['POST'])
 @check_for_token
-def post_request(*args):
+def post_request(auth_user_id, *args):
     request_dict = request.get_json()
+    request_dict.update({'user_id': auth_user_id})
     return h.request_registration(request_dict)
 
 
@@ -85,7 +86,7 @@ def update_request_status(auth_user_id, role):
         request_dict = request.get_json()
         return h.update_request_status(request_dict)
     else:
-        return jsonify({"Acces error": "Insufficient rights to use the resource"}), 403
+        return jsonify({"Access error": "Insufficient rights to use the resource"}), 403
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
@@ -109,8 +110,9 @@ def get_user_requests(auth_user_id, role):
 
 @app.route('/jobs/post', methods=['POST'])
 @check_for_token
-def post_job(*args):
+def post_job(auth_user_id, *args):
     job_dict = request.get_json()
+    job_dict.update({'user_id': auth_user_id})
     return h.job_registration(job_dict)
 
 
@@ -136,11 +138,12 @@ def get_leaderboard(*args):
 
 @app.route('/tokens/notification/post', methods=['POST'])
 @check_for_token
-def set_token(*args):
+def set_token(auth_user_id, *args):
     token_dict = request.get_json()
+    token_dict.update({'user_id': auth_user_id})
     return h.set_token(token_dict)
 
 
 if __name__ == "__main__":
-    # app.run(host='0.0.0.0')
-    app.run()
+    app.run(host='0.0.0.0')
+    # app.run()

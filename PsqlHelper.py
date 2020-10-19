@@ -60,8 +60,12 @@ class PsqlHelper:
             return id
 
     def get_user_info(self, login, password):
-        query = """Select u.id,r.role from public.users u
-                left join public.roles r on u.id=r.user_id"""
+        query = f"""select u.id,r.role,req.id as request_id, pro.id as job_id from users u
+                left join public.roles r on u.id=r.user_id
+                left join requests req on req.user_id = u.id and req.request_type = '{self.empty_request_type}'
+                left join projects pro on pro.user_id = u.id and pro.customer_agreement = '{self.empty_request_type}'
+                and agent_agreement = '{self.empty_request_type}' and title = '{self.empty_request_type}'
+                """
         try:
             login = int(login)
             query += f' where phone = {login}'
@@ -200,7 +204,7 @@ class PsqlHelper:
             columns.append('add_info')
             values.append(add_info)
         sets = (f"{column}='{values}'" for column, values in zip(columns, values))
-        query = f"update public.requests set {','.join(sets)} where id = {request_id}"
+        query = f"update public.requests set {','.join(sets)} where id = '{request_id}'"
         # print(query)
         self.__execute_query(query, commit=True)
 
@@ -250,8 +254,11 @@ class PsqlHelper:
         return records[0][0]
 
     def registration_job(self, user_id):
-        columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts']
-        values = [user_id, self.empty_request_type, self.empty_request_type, self.empty_request_type]
+        columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts', 'title', 'custom_code', 'client_price',
+                   'cost_price']
+        values = [user_id, self.empty_request_type, self.empty_request_type, self.empty_request_type,
+                  self.empty_request_type,
+                  0, 0, 0]
         values = list(f"'{v}'" for v in values)
         query = f"INSERT INTO public.projects ({','.join(columns)}) VALUES ({','.join(values)}) returning id"
         records = self.__execute_query(query, commit=True, is_return=True)
@@ -269,14 +276,15 @@ class PsqlHelper:
             columns.append('description')
             values.append(description)
         sets = (f"{column}='{values}'" for column, values in zip(columns, values))
-        query = f"update public.jobs set {','.join(sets)} where id = {job_id}"
+        query = f"update public.projects set {','.join(sets)} where id = '{job_id}'"
         # print(query)
         self.__execute_query(query, commit=True)
 
     def get_jobs(self, top_count, user_id=None):
         query = f"select * from public.projects"
         if user_id:
-            query += f" where user_id = '{user_id}'"
+            query += f" where user_id = '{user_id}' and customer_agreement != '{self.empty_request_type}' " \
+                     f"and agent_agreement != '{self.empty_request_type}' and acts != '{self.empty_request_type}'"
         query += f" order by insert_dt desc limit {top_count}"""
         # print(query)
         records, columns = self.__execute_query(query, is_columns_name=True)
