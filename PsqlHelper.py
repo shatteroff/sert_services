@@ -219,6 +219,16 @@ class PsqlHelper:
                 where user_id='{user_id}' and id = '{request_id}'"""
         self.__execute_query(query, commit=True)
 
+    def get_empty_job_id(self, user_id):
+        query = f"""select id from public.projects where user_id = '{user_id}'
+                and customer_agreement = '{self.empty_request_type}' and agent_agreement = '{self.empty_request_type}'
+                and acts = '{self.empty_request_type}'"""
+        records = self.__execute_query(query)
+        if records:
+            return records[0][0]
+        else:
+            return None
+
     def insert_job(self, user_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price,
                    request_id=None, description=None, job_id=None):
         columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts', 'title', 'custom_code', 'client_price',
@@ -238,6 +248,30 @@ class PsqlHelper:
         print(query)
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
+
+    def registration_job(self, user_id):
+        columns = ['user_id', 'customer_agreement', 'agent_agreement', 'acts']
+        values = [user_id, self.empty_request_type, self.empty_request_type, self.empty_request_type]
+        values = list(f"'{v}'" for v in values)
+        query = f"INSERT INTO public.projects ({','.join(columns)}) VALUES ({','.join(values)}) returning id"
+        records = self.__execute_query(query, commit=True, is_return=True)
+        return records[0][0]
+
+    def update_job(self, job_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price,
+                   request_id=None, description=None):
+        columns = ['id', 'customer_agreement', 'agent_agreement', 'acts', 'title', 'custom_code', 'client_price',
+                   'cost_price']
+        values = [job_id, c_agreement, a_agreement, acts, title, custom_code, client_price, cost_price]
+        if request_id:
+            columns.append('request_id')
+            values.append(request_id)
+        if description:
+            columns.append('description')
+            values.append(description)
+        sets = (f"{column}='{values}'" for column, values in zip(columns, values))
+        query = f"update public.jobs set {','.join(sets)} where id = {job_id}"
+        # print(query)
+        self.__execute_query(query, commit=True)
 
     def get_jobs(self, top_count, user_id=None):
         query = f"select * from public.projects"

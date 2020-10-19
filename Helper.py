@@ -34,7 +34,10 @@ class Helper:
             if not request_id:
                 request_id = self.ph.registration_request(user_id)
             payload.update({'request_id': request_id})
-
+            job_id = self.ph.registration_job(user_id)
+            if not job_id:
+                job_id = self.ph.registration_job(user_id)
+            payload.update({'job_id': job_id})
             return json.dumps(({'token': self.get_token(payload, secret_key).decode('utf-8')}))
 
     def user_registration(self, user_dict):
