@@ -24,6 +24,9 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             user_id = token_data.get('user_id')
+            firebase_token = token_data.get('firebase_token')
+            if firebase_token:
+                h.set_token(ph.insert_notification_token(user_id, firebase_token))
             role = token_data.get('role')
             if role:
                 role = role.lower()
