@@ -24,9 +24,6 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             user_id = token_data.get('user_id')
-            firebase_token = token_data.get('firebase_token')
-            if firebase_token:
-                h.set_token(ph.insert_notification_token(user_id, firebase_token))
             role = token_data.get('role')
             if role:
                 role = role.lower()
@@ -55,7 +52,8 @@ def login():
     login_dict = request.get_json()
     user_login = login_dict.get('login')
     password = login_dict.get('password')
-    token = h.user_login(user_login, password, app.config['SECRET_KEY'])
+    firebase_token = login_dict.get('firebase_token')
+    token = h.user_login(user_login, password, firebase_token, app.config['SECRET_KEY'])
     return token
 
 

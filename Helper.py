@@ -18,7 +18,7 @@ class Helper:
             secret_key)
         return token
 
-    def user_login(self, login, password, secret_key):
+    def user_login(self, login, password, firebase_token, secret_key):
         payload = {}
         user_info = self.ph.get_user_id(login, password)
         if user_info == 1:
@@ -28,6 +28,8 @@ class Helper:
         else:
             user_id = user_info[0]
             payload.update({'user_id': user_id})
+            if firebase_token:
+                self.ph.insert_notification_token(user_id, firebase_token)
             if user_info[1]:
                 payload.update({'role': user_info[1]})
             request_id = self.ph.get_empty_request_id(user_id)
@@ -184,7 +186,7 @@ class Helper:
 
     def set_token(self, token_dict):
         user_id = token_dict.get('user_id')
-        token = token_dict.get('token')
+        token = token_dict.get('firebase_token')
         self.ph.insert_notification_token(user_id, token)
         return json.dumps({"token_registration": "ok"})
 
