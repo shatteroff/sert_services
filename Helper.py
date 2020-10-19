@@ -146,9 +146,10 @@ class Helper:
         custom_code = job_dict.get('custom_code')
         client_price = job_dict.get('client_price')
         cost_price = job_dict.get('cost_price')
-        job_id = self.ph.insert_job(user_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
-                                    cost_price, request_id, description, job_id)
-        return json.dumps({"job_registration": {"job_id": job_id}})
+        job_id = self.ph.update_job(job_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
+                                    cost_price, request_id, description)
+        job_new_id = self.ph.registration_job(user_id)
+        return json.dumps({"job_registration": "ok", "job_id": job_new_id})
 
     def get_jobs(self, limit, user_id=None):
         if not limit:

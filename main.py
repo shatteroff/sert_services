@@ -24,8 +24,11 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             user_id = token_data.get('user_id')
+            role = token_data.get('role')
+            if role:
+                role = role.lower()
             # start_time = time.time()
-            data = func(user_id)
+            data = func(user_id, role)
             # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
         except jwt.exceptions.PyJWTError:
@@ -76,21 +79,23 @@ def post_request(*args):
 
 @app.route('/requests/updateStatus', methods=['PUT'])
 @check_for_token
-def update_request_status(auth_user_id):
-    if ph.get_user_role(auth_user_id) == 'admin':
+def update_request_status(auth_user_id, role):
+    if role == 'admin':
         request_dict = request.get_json()
         return h.update_request_status(request_dict)
+    else:
+        return jsonify({"Acces error": "Insufficient rights to use the resource"}), 403
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
 @check_for_token
-def get_user_requests(auth_user_id):
+def get_user_requests(auth_user_id, role):
     # token = request.headers.get(auth_header_str)
     # token_data = h.check_token(token, app.config['SECRET_KEY'])
     # if token_data:
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
-    if ph.get_user_role(auth_user_id) == 'admin':
+    if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id)
     else:
@@ -110,11 +115,11 @@ def post_job(*args):
 
 @app.route('/jobs/getByUserId', methods=['GET'])
 @check_for_token
-def get_user_jobs(auth_user_id):
+def get_user_jobs(auth_user_id, role):
     # user_id = request.args.get('userId')
     limit = request.args.get('limit')
     # return h.get_jobs(limit, user_id=user_id)
-    if ph.get_user_role(auth_user_id) == 'admin':
+    if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_jobs(limit, user_id=user_id)
     else:
