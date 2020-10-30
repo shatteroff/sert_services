@@ -125,13 +125,15 @@ class Helper:
             request_data_dict = {}
             for i in range(len(columns) - 1):
                 request_data_dict.update({columns[i]: record[i]})
-            request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            request_data_dict.update({"date": record[len(columns) - 1].isoformat()})
             records_active.append(request_data_dict.copy())
         for record in records_old:
             request_data_dict = {}
             for i in range(len(columns) - 1):
                 request_data_dict.update({columns[i]: record[i]})
-            request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            request_data_dict.update({"date": record[len(columns) - 1].isoformat()})
             records_closed.append(request_data_dict.copy())
         requests_dict = {}
         if records_active:
@@ -189,12 +191,13 @@ class Helper:
             for i in range(len(columns) - 1):
                 if not (columns[i] == 'user_id'):
                     job_data_dict.update({columns[i]: record[i]})
-            job_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            # job_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
+            job_data_dict.update({"date": record[len(columns) - 1].isoformat()})
             job_list.append(job_data_dict.copy())
-        if job_list:
-            json_to_send = {"jobs": job_list}
-        else:
-            json_to_send = {"jobs": "empty"}
+        # if job_list:
+        json_to_send = {"jobs": job_list}
+        # else:
+        #     json_to_send = {"jobs": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)
 
     def get_leader_board(self, limit):
