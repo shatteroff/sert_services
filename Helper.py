@@ -5,6 +5,7 @@ import jwt
 
 from FirebaseHelper import FirebaseHelper
 from PsqlHelper import PsqlHelper
+
 try:
     from Config import Config
 except:
@@ -107,10 +108,11 @@ class Helper:
         doc_type = request_dict.get('doc_type')
         validity_period = request_dict.get('validity_period')
         add_info = request_dict.get('add_info')
-        self.ph.update_request(request_id, request_type, custom_code, product_type, doc_type, validity_period, add_info)
-        request_new_id = self.ph.registration_request(user_id)
-        return json.dumps({"request_registration": "ok",
-                           "request_id": request_new_id})
+        self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info,
+                               request_id)
+        # request_new_id = self.ph.registration_request(user_id)
+        return json.dumps({"request_registration": "ok"})
+                              # , "request_id": request_new_id})
 
     def get_user_requests(self, limit, user_id=None):
         if not limit:
@@ -171,10 +173,11 @@ class Helper:
         custom_code = job_dict.get('custom_code')
         client_price = job_dict.get('client_price')
         cost_price = job_dict.get('cost_price')
-        job_id = self.ph.update_job(job_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
-                                    cost_price, request_id, description)
-        job_new_id = self.ph.registration_job(user_id)
-        return json.dumps({"job_registration": "ok", "job_id": job_new_id})
+        job_id = self.ph.insert_job(user_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
+                                    cost_price, request_id, description,job_id)
+        # job_new_id = self.ph.registration_job(user_id)
+        return json.dumps({"job_registration": "ok"})
+                              # , "job_id": job_new_id})
 
     def get_jobs(self, limit, user_id=None):
         if not limit:

@@ -154,7 +154,7 @@ class PsqlHelper:
             return None
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
-                       validity_period=None, add_info=None):
+                       validity_period=None, add_info=None, request_id=None):
         columns = ['user_id', 'request_type']
         values = [user_id, request_type]
         if custom_code:
@@ -172,6 +172,9 @@ class PsqlHelper:
         if add_info:
             columns.append('add_info')
             values.append(add_info)
+        if request_id:
+            columns.append('id')
+            values.append(request_id)
         values = list(f"'{v}'" for v in values)
         query = f"INSERT INTO public.requests({','.join(columns)}) VALUES ({','.join(values)}) returning id"
         print(query)
@@ -213,7 +216,8 @@ class PsqlHelper:
     def get_requests(self, top_count, status_list, user_id=None, request_type='app'):
         statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select * from public.requests
-                where status in ({statuses}) and request_type = '{request_type}'"""
+                where status in ({statuses})"""
+                # and request_type = '{request_type}'"""
         if user_id:
             query += f""" and user_id = '{user_id}'"""
         query += f"""order by insert_dt desc limit {top_count}"""
