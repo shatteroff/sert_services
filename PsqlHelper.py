@@ -43,7 +43,9 @@ class PsqlHelper:
             return records
 
     def get_user_id(self, login, password):
-        query = 'Select * from public.users'
+        query = f"""select u.id,r.role from users u
+                left join public.roles r on u.id=r.user_id
+                """
         try:
             login = int(login)
             query += f' where phone = {login}'
@@ -56,8 +58,8 @@ class PsqlHelper:
         elif len(records) == 0:
             return 0
         else:
-            id = records[0][0]
-            return id
+            user_info = records[0]
+            return user_info
 
     def get_user_info(self, login, password):
         query = f"""select u.id,r.role,req.id as request_id, pro.id as job_id from users u
@@ -102,17 +104,17 @@ class PsqlHelper:
         error_list = []
         query = 'Select * from public.users'
         if phone:
-            query_phone = query + f" where phone ='{phone}'"
+            query_phone = query + f" where lower(phone) ='{phone.lower()}'"
             records = self.__execute_query(query_phone)
             if records:
                 error_list.append('phone')
         if email:
-            query_email = query + f" where email = '{email}'"
+            query_email = query + f" where lower(email) = '{email.lower()}'"
             records = self.__execute_query(query_email)
             if records:
                 error_list.append('email')
         if alias:
-            query_alias = query + f" where alias = '{alias}'"
+            query_alias = query + f" where lower(alias) = '{alias.lower()}'"
             records = self.__execute_query(query_alias)
             if records:
                 error_list.append('alias')

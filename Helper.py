@@ -22,9 +22,36 @@ class Helper:
             secret_key)
         return token
 
+    # def user_login(self, login, password, firebase_token, secret_key):
+    #     payload = {}
+    #     user_info = self.ph.get_user_info(login, password)
+    #     if user_info == 1:
+    #         return json.dumps({"Login error": "Error"}), 401
+    #     elif user_info == 0:
+    #         return json.dumps({"Login error": "Non-existent user"}), 401
+    #     else:
+    #         user_id = user_info[0]
+    #         payload.update({'user_id': user_id})
+    #         payload.update({'yandex_token': Config.YANDEX_TOKEN})
+    #         request_id = user_info[2]
+    #         job_id = user_info[3]
+    #         if firebase_token:
+    #             self.ph.insert_notification_token(user_id, firebase_token)
+    #         if user_info[1]:
+    #             payload.update({'role': user_info[1]})
+    #         # request_id = self.ph.get_empty_request_id(user_id)
+    #         if not request_id:
+    #             request_id = self.ph.registration_request(user_id)
+    #         payload.update({'request_id': request_id})
+    #         # job_id = self.ph.get_empty_job_id(user_id)
+    #         if not job_id:
+    #             job_id = self.ph.registration_job(user_id)
+    #         payload.update({'job_id': job_id})
+    #         return json.dumps(({'token': self.get_token(payload, secret_key).decode('utf-8')}))
+
     def user_login(self, login, password, firebase_token, secret_key):
-        payload = {}
-        user_info = self.ph.get_user_info(login, password)
+        payload = {'yandex_token': Config.YANDEX_TOKEN}
+        user_info = self.ph.get_user_id(login, password)
         if user_info == 1:
             return json.dumps({"Login error": "Error"}), 401
         elif user_info == 0:
@@ -32,21 +59,10 @@ class Helper:
         else:
             user_id = user_info[0]
             payload.update({'user_id': user_id})
-            payload.update({'yandex_token': Config.YANDEX_TOKEN})
-            request_id = user_info[2]
-            job_id = user_info[3]
             if firebase_token:
                 self.ph.insert_notification_token(user_id, firebase_token)
             if user_info[1]:
                 payload.update({'role': user_info[1]})
-            # request_id = self.ph.get_empty_request_id(user_id)
-            if not request_id:
-                request_id = self.ph.registration_request(user_id)
-            payload.update({'request_id': request_id})
-            # job_id = self.ph.get_empty_job_id(user_id)
-            if not job_id:
-                job_id = self.ph.registration_job(user_id)
-            payload.update({'job_id': job_id})
             return json.dumps(({'token': self.get_token(payload, secret_key).decode('utf-8')}))
 
     def user_registration(self, user_dict):
