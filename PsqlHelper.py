@@ -213,14 +213,16 @@ class PsqlHelper:
         # print(query)
         self.__execute_query(query, commit=True)
 
-    def get_requests(self, top_count, status_list, user_id=None, request_type='app'):
-        statuses = ','.join(f"'{status}'" for status in status_list)
-        query = f"""select * from public.requests
-                where status in ({statuses})"""
+    def get_requests(self, top_count=None, status_list=None, user_id=None, request_type='app'):
+        # statuses = ','.join(f"'{status}'" for status in status_list)
+        query = f"""select * from public.requests"""
+                # where status in ({statuses})"""
                 # and request_type = '{request_type}'"""
         if user_id:
-            query += f""" and user_id = '{user_id}'"""
-        query += f"""order by insert_dt desc limit {top_count}"""
+            query += f""" where user_id = '{user_id}'"""
+        query += f""" order by insert_dt desc """
+        if top_count:
+            query += f""" limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
