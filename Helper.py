@@ -5,6 +5,10 @@ import jwt
 
 from FirebaseHelper import FirebaseHelper
 from PsqlHelper import PsqlHelper
+try:
+    from Config import Config
+except:
+    from Config_local import Config
 
 
 class Helper:
@@ -28,6 +32,7 @@ class Helper:
         else:
             user_id = user_info[0]
             payload.update({'user_id': user_id})
+            payload.update({'yandex_token': Config.YANDEX_TOKEN})
             request_id = user_info[2]
             job_id = user_info[3]
             if firebase_token:
