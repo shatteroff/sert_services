@@ -161,7 +161,7 @@ class Helper:
             for i in range(len(columns) - 1):
                 request_data_dict.update({columns[i]: record[i]})
             # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-            request_data_dict.update({"date": record[len(columns) - 1].isoformat()})
+            request_data_dict.update({"date": record[len(columns) - 1].isoformat(timespec="seconds")})
             requests.append(request_data_dict.copy())
         # if requests_dict:
         json_to_send = {"requests": requests}
