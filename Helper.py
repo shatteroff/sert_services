@@ -211,7 +211,7 @@ class Helper:
                 if not (columns[i] == 'user_id'):
                     job_data_dict.update({columns[i]: record[i]})
             # job_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-            job_data_dict.update({"date": record[len(columns) - 1].isoformat()})
+            job_data_dict.update({"date": record[len(columns) - 1].isoformat(timespec="seconds")})
             job_list.append(job_data_dict.copy())
         # if job_list:
         json_to_send = {"jobs": job_list}
