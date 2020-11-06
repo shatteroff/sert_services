@@ -43,7 +43,7 @@ class PsqlHelper:
             return records
 
     def get_user_id(self, login, password):
-        query = f"""select u.id,r.role from users u
+        query = f"""select u.id,r.role,u.name,u.phone,u.email from users u
                 left join public.roles r on u.id=r.user_id
                 """
         try:
@@ -215,7 +215,8 @@ class PsqlHelper:
 
     def get_requests(self, top_count=None, status_list=None, user_id=None, request_type='app'):
         # statuses = ','.join(f"'{status}'" for status in status_list)
-        query = f"""select * from public.requests"""
+        query = f"""select u.name as user_name,r.* from public.requests r
+                join public.users u on r.user_id=u.id"""
                 # where status in ({statuses})"""
                 # and request_type = '{request_type}'"""
         if user_id:

@@ -60,6 +60,12 @@ class Helper:
         else:
             user_id = user_info[0]
             payload.update({'user_id': user_id})
+            user_name = user_info[2]
+            payload.update({'user_name': user_name})
+            email = user_info[4]
+            if not email:
+                email = user_info[3]
+            payload.update({'contact': email})
             if firebase_token:
                 self.ph.insert_notification_token(user_id, firebase_token)
             if user_info[1]:
