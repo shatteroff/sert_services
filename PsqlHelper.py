@@ -154,7 +154,7 @@ class PsqlHelper:
             return None
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
-                       validity_period=None, add_info=None, request_id=None):
+                       validity_period=None, add_info=None, request_id=None, files = None):
         columns = ['user_id', 'request_type']
         values = [user_id, request_type]
         if custom_code:
@@ -175,6 +175,10 @@ class PsqlHelper:
         if request_id:
             columns.append('id')
             values.append(request_id)
+        if files:
+            columns.append('files')
+            files_str = ','.join(files)
+            values.append(f"{{{files_str}}}")
         values = list(f"'{v}'" for v in values)
         query = f"INSERT INTO public.requests({','.join(columns)}) VALUES ({','.join(values)}) returning id"
         print(query)

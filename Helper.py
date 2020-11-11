@@ -114,8 +114,9 @@ class Helper:
         doc_type = request_dict.get('doc_type')
         validity_period = request_dict.get('validity_period')
         add_info = request_dict.get('add_info')
+        files = request_dict.get('files')
         self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info,
-                               request_id)
+                               request_id,files)
         # request_new_id = self.ph.registration_request(user_id)
         return json.dumps({"request_registration": "ok"})
                               # , "request_id": request_new_id})
@@ -164,10 +165,10 @@ class Helper:
         records, columns = self.ph.get_requests(limit, user_id=user_id)
         for record in records:
             request_data_dict = {}
-            for i in range(len(columns) - 1):
+            for i in range(len(columns)):
                 request_data_dict.update({columns[i]: record[i]})
             # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-            request_data_dict.update({"date": record[len(columns) - 1].isoformat(timespec="seconds")})
+            request_data_dict.update({"date": request_data_dict.pop("insert_dt").isoformat(timespec="seconds")})
             requests.append(request_data_dict.copy())
         # if requests_dict:
         json_to_send = {"requests": requests}
@@ -213,11 +214,11 @@ class Helper:
         job_data_dict = {}
         job_list = []
         for record in records:
-            for i in range(len(columns) - 1):
+            for i in range(len(columns)):
                 if not (columns[i] == 'user_id'):
                     job_data_dict.update({columns[i]: record[i]})
             # job_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-            job_data_dict.update({"date": record[len(columns) - 1].isoformat(timespec="seconds")})
+            job_data_dict.update({"date": job_data_dict.pop("insert_dt").isoformat(timespec="seconds")})
             job_list.append(job_data_dict.copy())
         # if job_list:
         json_to_send = {"jobs": job_list}
