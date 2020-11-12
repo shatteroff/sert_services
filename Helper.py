@@ -258,7 +258,7 @@ class Helper:
         price = info_dict.get('price')
         duration = info_dict.get('duration')
         self.ph.insert_add_request_info(request_id, required_files, price, duration)
-        return json.dumps({"request_info": "ok"})
+        return json.dumps({"update_request_info": "ok"})
 
     def get_request_info(self, request_id):
         info_dict = {}
