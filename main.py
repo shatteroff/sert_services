@@ -159,8 +159,7 @@ def get_request_info(*args):
 @check_for_token
 def add_request_info(*args):
     info_dict = request.get_json()
-    h.add_request_info(info_dict)
-    return jsonify({"request_info": "success"})
+    return h.add_request_info(info_dict)
 
 
 if __name__ == "__main__":
