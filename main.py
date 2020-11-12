@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 
 from Helper import Helper
 from PsqlHelper import PsqlHelper
+
 try:
     from Config import Config
 except:
@@ -153,6 +154,13 @@ def get_request_info(*args):
     request_id = request.args.get('id')
     return h.get_request_info(request_id)
 
+
+@app.route('/requests/addInfo', methods=['POST'])
+@check_for_token
+def add_request_info(*args):
+    info_dict = request.get_json()
+    h.add_request_info(info_dict)
+    return jsonify({"request_info": "success"})
 
 
 if __name__ == "__main__":
