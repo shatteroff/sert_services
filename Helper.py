@@ -184,9 +184,10 @@ class Helper:
         self.ph.update_request_status(user_id, request_id, status)
         if notification:
             client_token = self.ph.get_notification_token(user_id)
-            title = 'Статус Вашего запроса был изменен'
-            # body = 'Зайдите в приложение, чтобы узнать подробности'
-            message_id = self.fbh.send_notification(client_token, title, request_id)
+            if client_token:
+                title = 'Статус Вашего запроса был изменен'
+                # body = 'Зайдите в приложение, чтобы узнать подробности'
+                message_id = self.fbh.send_notification(client_token, title, request_id)
         return json.dumps({"request_update": "ok"})
 
     def job_registration(self, job_dict):
