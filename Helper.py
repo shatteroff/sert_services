@@ -116,10 +116,10 @@ class Helper:
         add_info = request_dict.get('add_info')
         files = request_dict.get('files')
         self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info,
-                               request_id,files)
+                               request_id, files)
         # request_new_id = self.ph.registration_request(user_id)
         return json.dumps({"request_registration": "ok"})
-                              # , "request_id": request_new_id})
+        # , "request_id": request_new_id})
 
     # def get_user_requests(self, limit, user_id=None):
     #     if not limit:
@@ -202,10 +202,10 @@ class Helper:
         client_price = job_dict.get('client_price')
         cost_price = job_dict.get('cost_price')
         job_id = self.ph.insert_job(user_id, c_agreement, a_agreement, acts, title, custom_code, client_price,
-                                    cost_price, request_id, description,job_id)
+                                    cost_price, request_id, description, job_id)
         # job_new_id = self.ph.registration_job(user_id)
         return json.dumps({"job_registration": "ok"})
-                              # , "job_id": job_new_id})
+        # , "job_id": job_new_id})
 
     def get_jobs(self, limit, user_id=None):
         if not limit:
@@ -250,3 +250,19 @@ class Helper:
         token = token_dict.get('token')
         self.ph.update_notification_token(user_id, token)
         return json.dumps({"token_update": "ok"})
+
+    def add_request_info(self, info_dict):
+        request_id = info_dict.get('request_id')
+        required_files = info_dict.get('required_files')
+        price = info_dict.get('price')
+        duration = info_dict.get('duration')
+        self.ph.insert_add_request_info(request_id, required_files, price, duration)
+
+    def get_request_info(self, request_id):
+        info_dict = {}
+        records, columns = self.ph.get_add_request_info(request_id)
+        if records:
+            info_dict = dict(zip(columns, records))
+            return json.dumps(info_dict)
+        else:
+            return json.dumps(info_dict)

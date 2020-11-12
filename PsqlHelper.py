@@ -154,7 +154,7 @@ class PsqlHelper:
             return None
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
-                       validity_period=None, add_info=None, request_id=None, files = None):
+                       validity_period=None, add_info=None, request_id=None, files=None):
         columns = ['user_id', 'request_type']
         values = [user_id, request_type]
         if custom_code:
@@ -221,8 +221,8 @@ class PsqlHelper:
         # statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select u.name as user_name,r.* from public.requests r
                 join public.users u on r.user_id=u.id"""
-                # where status in ({statuses})"""
-                # and request_type = '{request_type}'"""
+        # where status in ({statuses})"""
+        # and request_type = '{request_type}'"""
         if user_id:
             query += f""" where user_id = '{user_id}'"""
         query += f""" order by insert_dt desc """
@@ -341,3 +341,42 @@ $do$"""
         records = self.__execute_query(query)
         if records:
             return records[0][0]
+
+    def insert_add_request_info(self, request_id, required_files=None, price=None, duration=None):
+        columns = ['request_id']
+        values = [request_id]
+        subquery_update = []
+        if required_files:
+            columns.append('required_files')
+            files_str = ','.join(required_files)
+            values.append(f"{{{files_str}}}")
+            subquery_update.append(f"required_files = array_cat(required_files,'{{{files_str}}}')")
+        if price:
+            columns.append('price')
+            values.append(price)
+            subquery_update.append(f"price = {price}")
+        if duration:
+            columns.append('duration')
+            values.append(duration)
+            subquery_update.append(f"duration = {duration}")
+        values = list(f"'{v}'" for v in values)
+        query_insert = f"INSERT INTO public.add_request_info({','.join(columns)}) VALUES ({','.join(values)})"
+        query = f"""DO
+        $do$
+        BEGIN
+        IF EXISTS (SELECT * FROM public.add_request_info where request_id = '{request_id}') THEN
+        update public.add_request_info set {','.join(subquery_update)} where request_id='{request_id}';
+        else {query_insert};
+        END IF;
+        END
+        $do$"""
+        print(query)
+        self.__execute_query(query, commit=True)
+
+    def get_add_request_info(self, request_id):
+        query = f"select * from add_request_info where request_id = '{request_id}'"
+        records, columns = self.__execute_query(query, is_columns_name=True)
+        if records:
+            return records[0], columns
+        else:
+            return None, None

@@ -147,6 +147,14 @@ def set_token(auth_user_id, *args):
     return h.set_token(token_dict)
 
 
+@app.route('/requests/getInfo', methods=['GET'])
+@check_for_token
+def get_request_info(*args):
+    request_id = request.args.get('id')
+    return h.get_request_info(request_id)
+
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()
