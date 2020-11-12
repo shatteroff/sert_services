@@ -264,6 +264,6 @@ class Helper:
         records, columns = self.ph.get_add_request_info(request_id)
         if records:
             info_dict = dict(zip(columns, records))
-            return json.dumps(info_dict)
+            return json.dumps(info_dict, ensure_ascii=False)
         else:
             return json.dumps(info_dict)
