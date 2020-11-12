@@ -235,9 +235,7 @@ class Helper:
         if records:
             for record in records:
                 margin_list.append({key: value for key, value in zip(columns, record)})
-            json_to_send = {"leaderboard": margin_list}
-        else:
-            json_to_send = {"leaderboard": "empty"}
+        json_to_send = {"leaderboard": margin_list}
         return json.dumps(json_to_send, ensure_ascii=False)
 
     def set_token(self, token_dict):

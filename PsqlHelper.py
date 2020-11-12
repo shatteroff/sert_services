@@ -380,3 +380,7 @@ $do$"""
             return records[0], columns
         else:
             return None, None
+
+    def delete_margin(self):
+        query = "delete from margin"
+        self.__execute_query(query,commit= True)
