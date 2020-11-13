@@ -267,7 +267,15 @@ class Helper:
         else:
             return json.dumps(info_dict)
 
-    def add_files_to_request(self,req_dict):
+    def add_files_to_request(self, req_dict):
         request_id = req_dict.get("request_id")
         files = req_dict.get("files")
-        self.ph.add_files_to_request(request_id,files)
+        self.ph.add_files_to_request(request_id, files)
+        return json.dumps({"files_upload": "success"})
+
+    def add_user_info(self, user_dict):
+        user_id = user_dict.get('user_id')
+        workplace = user_dict.get('workplace')
+        acc_num = user_dict.get('account_number')
+        self.ph.update_user_info(user_id, workplace, acc_num)
+        return json.dumps({"user_info_update": "success"})

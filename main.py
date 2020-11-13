@@ -183,6 +183,14 @@ def add_files_to_request(*args):
     return h.add_files_to_request(info_dict)
 
 
+@app.route('/users/addInfo', methods=['POST'])
+@check_for_token
+def add_user_info(auth_user_id, *args):
+    user_dict = request.get_json()
+    user_dict.update({'user_id': auth_user_id})
+    return h.add_user_info(user_dict)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()

@@ -83,6 +83,20 @@ class PsqlHelper:
             user_info = records[0]
             return user_info
 
+    def update_user_info(self, user_id, workplace=None, account_number=None):
+        columns = []
+        values = []
+        if workplace:
+            columns.append('workplace')
+            values.append(workplace)
+        if account_number:
+            columns.append('account_number')
+            values.append(account_number)
+        sets = (f"{column}='{values}'" for column, values in zip(columns, values))
+        query = f"update public.users set {','.join(sets)} where id = '{user_id}'"
+        # print(query)
+        self.__execute_query(query, commit=True)
+
     def get_login(self, login, password):
         query = 'Select * from public.users'
         try:
@@ -309,10 +323,10 @@ class PsqlHelper:
         return records, columns
 
     def get_margins(self, top_count):
-        query = f"""select m.*,u.name,u.alias from margin m
+        query = f"""select m.*,u.name,u.alias,u.workplace from margin m
                 join users u on m.user_id = u.id
                 where margin>0
-                order by margin desc limit {top_count}"""
+                order by full_price desc limit {top_count}"""
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
