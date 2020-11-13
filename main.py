@@ -100,11 +100,11 @@ def post_request(auth_user_id, *args):
 @app.route('/requests/updateStatus', methods=['PUT', 'POST'])
 @check_for_token
 def update_request_status(auth_user_id, role):
-    if role == 'admin':
-        request_dict = request.get_json()
-        return h.update_request_status(request_dict)
-    else:
-        return jsonify({"Access error": "Insufficient rights to use the resource"}), 403
+    # if role == 'admin':
+    request_dict = request.get_json()
+    return h.update_request_status(request_dict)
+    # else:
+    #     return jsonify({"Access error": "Insufficient rights to use the resource"}), 403
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
