@@ -176,6 +176,13 @@ def add_request_info(*args):
     return h.add_request_info(info_dict)
 
 
+@app.route('/requests/addFiles', methods=['POST'])
+@check_for_token
+def add_request_info(*args):
+    info_dict = request.get_json()
+    return h.add_files_to_request(info_dict)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
     # app.run()

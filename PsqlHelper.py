@@ -236,6 +236,11 @@ class PsqlHelper:
                 where user_id='{user_id}' and id = '{request_id}'"""
         self.__execute_query(query, commit=True)
 
+    def add_files_to_request(self, request_id, files):
+        files_str = ','.join(files)
+        query = f"update requests set files = array_cat(files,'{{{files_str}}}') where id = '{request_id}'"
+        self.__execute_query(query, commit=True)
+
     def get_empty_job_id(self, user_id):
         query = f"""select id from public.projects where user_id = '{user_id}'
                 and customer_agreement = '{self.empty_request_type}' and agent_agreement = '{self.empty_request_type}'
@@ -383,4 +388,4 @@ $do$"""
 
     def delete_margin(self):
         query = "delete from margin"
-        self.__execute_query(query,commit= True)
+        self.__execute_query(query, commit=True)

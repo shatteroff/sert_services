@@ -266,3 +266,8 @@ class Helper:
             return json.dumps(info_dict, ensure_ascii=False)
         else:
             return json.dumps(info_dict)
+
+    def add_files_to_request(self,req_dict):
+        request_id = req_dict.get("request_id")
+        files = req_dict.get("files")
+        self.ph.add_files_to_request(request_id,files)
