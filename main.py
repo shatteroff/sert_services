@@ -1,8 +1,10 @@
+import json
 import time
 from functools import wraps
 
 import jwt
 from flask import Flask, request, jsonify
+from werkzeug.exceptions import HTTPException
 
 from Helper import Helper
 from PsqlHelper import PsqlHelper
@@ -17,6 +19,18 @@ app.config['SECRET_KEY'] = Config.SECRET_KEY
 ph = PsqlHelper()
 h = Helper()
 auth_header_str = 'Authorization'
+
+
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+    response = e.get_response()
+    response.date = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description
+    })
+    response.content_type = "application/json"
+    return response
 
 
 def check_for_token(func):
@@ -83,7 +97,7 @@ def post_request(auth_user_id, *args):
     return h.request_registration(request_dict)
 
 
-@app.route('/requests/updateStatus', methods=['PUT'])
+@app.route('/requests/updateStatus', methods=['PUT', 'POST'])
 @check_for_token
 def update_request_status(auth_user_id, role):
     if role == 'admin':
