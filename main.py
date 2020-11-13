@@ -24,7 +24,7 @@ auth_header_str = 'Authorization'
 @app.errorhandler(HTTPException)
 def handle_exception(e):
     response = e.get_response()
-    response.date = json.dumps({
+    response.data = json.dumps({
         "code": e.code,
         "name": e.name,
         "description": e.description
