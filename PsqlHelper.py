@@ -118,7 +118,7 @@ class PsqlHelper:
         error_list = []
         query = 'Select * from public.users'
         if phone:
-            query_phone = query + f" where lower(phone) ='{phone.lower()}'"
+            query_phone = query + f" where phone ='{phone}'"
             records = self.__execute_query(query_phone)
             if records:
                 error_list.append('phone')
@@ -402,7 +402,7 @@ $do$"""
 
     def delete_files_from_add_request_info(self,request_id):
         query = f"update add_request_info set required_files = null where request_id = '{request_id}'"
-        self.__execute_query(query, is_columns_name=True)
+        self.__execute_query(query, commit=True)
 
     def delete_margin(self):
         query = "delete from margin"

@@ -263,6 +263,8 @@ class Helper:
         records, columns = self.ph.get_add_request_info(request_id)
         if records:
             info_dict = dict(zip(columns, records))
+            if info_dict.get('required_files') is None:
+                info_dict.update({'required_files': []})
             return json.dumps(info_dict, ensure_ascii=False)
         else:
             return json.dumps(info_dict)
@@ -272,7 +274,7 @@ class Helper:
         files = req_dict.get("files")
         self.ph.add_files_to_request(request_id, files)
         add_info_dict = self.get_request_info(request_id)
-        if add_info_dict.get("required_files"):
+        if json.loads(add_info_dict).get("required_files"):
             self.ph.delete_files_from_add_request_info(request_id)
         return json.dumps({"files_upload": "success"})
 
