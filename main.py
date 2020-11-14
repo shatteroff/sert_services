@@ -92,9 +92,9 @@ def get_id(*args):
 @check_for_token
 def post_request(token_data):
     request_dict = request.get_json()
-    auth_user_id = token_data('user_id')
+    auth_user_id = token_data.get('user_id')
     request_dict.update({'user_id': auth_user_id})
-    request_dict.update({'user_name': token_data('user_name')})
+    request_dict.update({'user_name': token_data.get('user_name')})
     return h.request_registration(request_dict)
 
 
@@ -117,7 +117,9 @@ def get_user_requests(token_data):
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
     auth_user_id = token_data.get('user_id')
-    role = token_data.get('role').lower()
+    role = token_data.get('role')
+    if role:
+        role = role.lower()
     if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id)
@@ -143,7 +145,9 @@ def post_job(token_data):
 def get_user_jobs(token_data):
     # user_id = request.args.get('userId')
     auth_user_id = token_data.get('user_id')
-    role = token_data.get('role').lower()
+    role = token_data.get('role')
+    if role:
+        role = role.lower()
     limit = request.args.get('limit')
     # return h.get_jobs(limit, user_id=user_id)
     if role == 'admin':
