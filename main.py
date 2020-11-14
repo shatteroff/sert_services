@@ -42,7 +42,6 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             # user_id = token_data.get('user_id')
-            token_data.update({"role":token_data.get("role").lower()})
             # if role:
             #     role = role.lower()
             # start_time = time.time()
@@ -118,7 +117,7 @@ def get_user_requests(token_data):
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
     auth_user_id = token_data.get('user_id')
-    role = token_data.get('role')
+    role = token_data.get('role').lower()
     if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id)
@@ -144,7 +143,7 @@ def post_job(token_data):
 def get_user_jobs(token_data):
     # user_id = request.args.get('userId')
     auth_user_id = token_data.get('user_id')
-    role = token_data.get('role')
+    role = token_data.get('role').lower()
     limit = request.args.get('limit')
     # return h.get_jobs(limit, user_id=user_id)
     if role == 'admin':
