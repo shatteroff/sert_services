@@ -41,12 +41,12 @@ def check_for_token(func):
             return jsonify({'Authorization error': 'Missing token'}), 403
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
-            user_id = token_data.get('user_id')
-            role = token_data.get('role')
-            if role:
-                role = role.lower()
+            # user_id = token_data.get('user_id')
+            token_data.update({"role":token_data.get("role").lower()})
+            # if role:
+            #     role = role.lower()
             # start_time = time.time()
-            data = func(user_id, role)
+            data = func(token_data)
             # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
         except jwt.exceptions.PyJWTError:
@@ -91,15 +91,17 @@ def get_id(*args):
 
 @app.route('/requests/post', methods=['POST'])
 @check_for_token
-def post_request(auth_user_id, *args):
+def post_request(token_data):
     request_dict = request.get_json()
+    auth_user_id = token_data('user_id')
     request_dict.update({'user_id': auth_user_id})
+    request_dict.update({'user_name': token_data('user_name')})
     return h.request_registration(request_dict)
 
 
 @app.route('/requests/updateStatus', methods=['PUT', 'POST'])
 @check_for_token
-def update_request_status(auth_user_id, role):
+def update_request_status(token_data):
     # if role == 'admin':
     request_dict = request.get_json()
     return h.update_request_status(request_dict)
@@ -109,12 +111,14 @@ def update_request_status(auth_user_id, role):
 
 @app.route('/requests/getByUserId', methods=['GET'])
 @check_for_token
-def get_user_requests(auth_user_id, role):
+def get_user_requests(token_data):
     # token = request.headers.get(auth_header_str)
     # token_data = h.check_token(token, app.config['SECRET_KEY'])
     # if token_data:
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
+    auth_user_id = token_data.get('user_id')
+    role = token_data.get('role')
     if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id)
@@ -128,7 +132,8 @@ def get_user_requests(auth_user_id, role):
 
 @app.route('/jobs/post', methods=['POST'])
 @check_for_token
-def post_job(auth_user_id, *args):
+def post_job(token_data):
+    auth_user_id = token_data.get('user_id')
     job_dict = request.get_json()
     job_dict.update({'user_id': auth_user_id})
     return h.job_registration(job_dict)
@@ -136,8 +141,10 @@ def post_job(auth_user_id, *args):
 
 @app.route('/jobs/getByUserId', methods=['GET'])
 @check_for_token
-def get_user_jobs(auth_user_id, role):
+def get_user_jobs(token_data):
     # user_id = request.args.get('userId')
+    auth_user_id = token_data.get('user_id')
+    role = token_data.get('role')
     limit = request.args.get('limit')
     # return h.get_jobs(limit, user_id=user_id)
     if role == 'admin':
@@ -156,7 +163,8 @@ def get_leaderboard(*args):
 
 @app.route('/tokens/notification/post', methods=['POST'])
 @check_for_token
-def set_token(auth_user_id, *args):
+def set_token(token_data):
+    auth_user_id = token_data.get('user_id')
     token_dict = request.get_json()
     token_dict.update({'user_id': auth_user_id})
     return h.set_token(token_dict)
@@ -185,7 +193,8 @@ def add_files_to_request(*args):
 
 @app.route('/users/addInfo', methods=['POST'])
 @check_for_token
-def add_user_info(auth_user_id, *args):
+def add_user_info(token_data):
+    auth_user_id = token_data.get('user_id')
     user_dict = request.get_json()
     user_dict.update({'user_id': auth_user_id})
     return h.add_user_info(user_dict)

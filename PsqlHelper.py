@@ -168,7 +168,7 @@ class PsqlHelper:
             return None
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
-                       validity_period=None, add_info=None, request_id=None, files=None):
+                       validity_period=None, add_info=None, request_id=None, files=None,short_id = None):
         columns = ['user_id', 'request_type']
         values = [user_id, request_type]
         if custom_code:
@@ -189,6 +189,9 @@ class PsqlHelper:
         if request_id:
             columns.append('id')
             values.append(request_id)
+        if short_id:
+            columns.append('short_id')
+            values.append(short_id)
         if files:
             columns.append('files')
             files_str = ','.join(files)

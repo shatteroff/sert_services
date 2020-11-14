@@ -1,4 +1,5 @@
 import json
+import time
 import uuid
 
 import jwt
@@ -115,8 +116,11 @@ class Helper:
         validity_period = request_dict.get('validity_period')
         add_info = request_dict.get('add_info')
         files = request_dict.get('files')
+        name = request_dict.get('user_name')
+        abr = "".join([x[0] for x in name.split(" ")])
+        short_id = abr + str(int(time.time()))
         self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info,
-                               request_id, files)
+                               request_id, files,short_id)
         # request_new_id = self.ph.registration_request(user_id)
         return json.dumps({"request_registration": "ok"})
         # , "request_id": request_new_id})
