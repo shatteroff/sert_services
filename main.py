@@ -169,7 +169,7 @@ def get_request_info(*args):
     return h.get_request_info(request_id)
 
 
-@app.route('/requests/addInfo', methods=['POST'])
+@app.route('/requests/addRequiredInfo', methods=['POST'])
 @check_for_token
 def add_request_info(*args):
     info_dict = request.get_json()

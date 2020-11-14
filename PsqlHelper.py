@@ -400,6 +400,10 @@ $do$"""
         else:
             return None, None
 
+    def delete_files_from_add_request_info(self,request_id):
+        query = f"update add_request_info set required_files = null where request_id = '{request_id}'"
+        self.__execute_query(query, is_columns_name=True)
+
     def delete_margin(self):
         query = "delete from margin"
         self.__execute_query(query, commit=True)

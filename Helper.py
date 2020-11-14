@@ -271,6 +271,9 @@ class Helper:
         request_id = req_dict.get("request_id")
         files = req_dict.get("files")
         self.ph.add_files_to_request(request_id, files)
+        add_info_dict = self.get_request_info(request_id)
+        if add_info_dict.get("required_files"):
+            self.ph.delete_files_from_add_request_info(request_id)
         return json.dumps({"files_upload": "success"})
 
     def add_user_info(self, user_dict):
