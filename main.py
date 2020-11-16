@@ -189,8 +189,9 @@ def add_request_info(*args):
 
 @app.route('/requests/addFiles', methods=['POST'])
 @check_for_token
-def add_files_to_request(*args):
+def add_files_to_request(token_data):
     info_dict = request.get_json()
+    info_dict.update({'user_id': token_data.get('user_id')})
     return h.add_files_to_request(info_dict)
 
 

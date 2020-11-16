@@ -120,46 +120,10 @@ class Helper:
         abr = "".join([x[0] for x in name.split(" ")])
         short_id = abr + str(int(time.time()))
         self.ph.insert_request(user_id, request_type, custom_code, product_type, doc_type, validity_period, add_info,
-                               request_id, files,short_id)
+                               request_id, files, short_id)
         # request_new_id = self.ph.registration_request(user_id)
         return json.dumps({"request_registration": "ok"})
         # , "request_id": request_new_id})
-
-    # def get_user_requests(self, limit, user_id=None):
-    #     if not limit:
-    #         limit = 25
-    #     records_active = []
-    #     records_closed = []
-    #     records_new, columns = self.ph.get_requests(limit, [0, 1, 2], user_id=user_id)
-    #     records_old, columns = self.ph.get_requests(limit, [999], user_id=user_id)
-    #     for record in records_new:
-    #         request_data_dict = {}
-    #         for i in range(len(columns) - 1):
-    #             request_data_dict.update({columns[i]: record[i]})
-    #         # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-    #         request_data_dict.update({"date": record[len(columns) - 1].isoformat()})
-    #         records_active.append(request_data_dict.copy())
-    #     for record in records_old:
-    #         request_data_dict = {}
-    #         for i in range(len(columns) - 1):
-    #             request_data_dict.update({columns[i]: record[i]})
-    #         # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
-    #         request_data_dict.update({"date": record[len(columns) - 1].isoformat()})
-    #         records_closed.append(request_data_dict.copy())
-    #     requests_dict = {}
-    #     if records_active:
-    #         active_dict = {"active": records_active}
-    #         print(len(records_active))
-    #         requests_dict.update(active_dict)
-    #     if records_closed:
-    #         closed_dict = {"closed": records_closed}
-    #         print(len(records_closed))
-    #         requests_dict.update(closed_dict)
-    #     if requests_dict:
-    #         json_to_send = {"requests": requests_dict}
-    #     else:
-    #         json_to_send = {"requests": "empty"}
-    #     return json.dumps(json_to_send, ensure_ascii=False)
 
     def get_user_requests(self, limit, user_id=None):
         if not limit:
@@ -274,8 +238,15 @@ class Helper:
             return json.dumps(info_dict)
 
     def add_files_to_request(self, req_dict):
+        user_id = req_dict.get('user_id')
         request_id = req_dict.get("request_id")
-        files = req_dict.get("files")
+        files = set(req_dict.get("files"))
+        records, columns = self.ph.get_requests(user_id=user_id, request_id=request_id)
+        if len(records) == 1:
+            index = columns.index('files')
+            existing_files = records[0][index]
+            if existing_files:
+                files -= set(existing_files)
         self.ph.add_files_to_request(request_id, files)
         add_info_dict = self.get_request_info(request_id)
         if json.loads(add_info_dict).get("required_files"):

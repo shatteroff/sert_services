@@ -234,7 +234,7 @@ class PsqlHelper:
         # print(query)
         self.__execute_query(query, commit=True)
 
-    def get_requests(self, top_count=None, status_list=None, user_id=None, request_type='app'):
+    def get_requests(self, top_count=None, user_id=None, request_id = None):
         # statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select u.name as user_name,r.* from public.requests r
                 join public.users u on r.user_id=u.id"""
@@ -242,6 +242,8 @@ class PsqlHelper:
         # and request_type = '{request_type}'"""
         if user_id:
             query += f""" where user_id = '{user_id}'"""
+        if request_id:
+            query += f" and r.id = '{request_id}'"
         query += f""" order by insert_dt desc """
         if top_count:
             query += f""" limit {top_count}"""
