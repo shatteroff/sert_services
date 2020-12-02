@@ -1,9 +1,9 @@
 import json
-import time
 from functools import wraps
 
 import jwt
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
 from Helper import Helper
@@ -15,10 +15,16 @@ except:
     from Config_local import Config
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = Config.SECRET_KEY
 ph = PsqlHelper()
 h = Helper()
 auth_header_str = 'Authorization'
+custom_headers = {'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Credentials': 'true',
+                  'Access-Control-Allow-Methods': 'DELETE, POST, GET, PUT, OPTIONS',
+                  'Access-Control-Allow-Headers':
+                      'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Access-Control-Max-Age, ACCESS-TOKEN'}
 
 
 @app.errorhandler(HTTPException)
