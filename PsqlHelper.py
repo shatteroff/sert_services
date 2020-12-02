@@ -250,9 +250,9 @@ class PsqlHelper:
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
-    def update_request_status(self, user_id, request_id, status):
+    def update_request_status(self, request_id, status):
         query = f"""update public.requests set status = {status}
-                where user_id='{user_id}' and id = '{request_id}'"""
+                where id = '{request_id}'"""
         self.__execute_query(query, commit=True)
 
     def add_files_to_request(self, request_id, files):

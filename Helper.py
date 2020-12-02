@@ -149,7 +149,7 @@ class Helper:
         request_id = request_dict.get('request_id')
         status = int(request_dict.get('status'))
         notification = bool(request_dict.get('notify'))
-        self.ph.update_request_status(user_id, request_id, status)
+        self.ph.update_request_status(request_id, status)
         if notification:
             client_token = self.ph.get_notification_token(user_id)
             if client_token:
