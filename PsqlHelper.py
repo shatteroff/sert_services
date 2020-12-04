@@ -406,7 +406,7 @@ $do$"""
             return None, None
 
     def delete_files_from_add_request_info(self,request_id):
-        query = f"update add_request_info set required_files = null where request_id = '{request_id}'"
+        query = f"update add_request_info set required_files = '{{}}' where request_id = '{request_id}'"
         self.__execute_query(query, commit=True)
 
     def delete_margin(self):
