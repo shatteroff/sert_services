@@ -142,7 +142,11 @@ def get_user_requests(token_data):
 def post_job(token_data):
     auth_user_id = token_data.get('user_id')
     job_dict = request.get_json()
-    job_dict.update({'user_id': auth_user_id})
+    role = token_data.get('role')
+    if role:
+        role = role.lower()
+    if role != 'admin':
+        job_dict.update({'user_id': auth_user_id})
     return h.job_registration(job_dict)
 
 
