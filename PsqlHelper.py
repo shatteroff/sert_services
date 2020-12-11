@@ -412,3 +412,11 @@ $do$"""
     def delete_margin(self):
         query = "delete from margin"
         self.__execute_query(query, commit=True)
+
+    def get_margin_view(self):
+        query = "select * from public.margin_view"
+        records, columns = self.__execute_query(query,is_columns_name=True)
+        if records:
+            return records, columns
+        else:
+            return None, None

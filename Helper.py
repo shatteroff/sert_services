@@ -1,6 +1,8 @@
+import csv
 import json
 import time
 import uuid
+from io import StringIO
 
 import jwt
 
@@ -259,3 +261,13 @@ class Helper:
         acc_num = user_dict.get('account_number')
         self.ph.update_user_info(user_id, workplace, acc_num)
         return json.dumps({"user_info_update": "success"})
+
+    def get_payment_statement(self, request_rate, job_rate):
+        records, columns = self.ph.get_margin_view()
+        f = StringIO()
+        w = csv.writer(f, delimiter=';')
+        w.writerow([columns[0], 'ФИО', 'Сумма к выплате'])
+        for record in records:
+            payment = record[2] * request_rate + record[3] * job_rate
+            w.writerow([record[0], record[1], payment])
+        return f.getvalue()

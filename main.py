@@ -2,7 +2,7 @@ import json
 from functools import wraps
 
 import jwt
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
@@ -212,6 +212,14 @@ def add_user_info(token_data):
     user_dict = request.get_json()
     user_dict.update({'user_id': auth_user_id})
     return h.add_user_info(user_dict)
+
+
+@app.route('/users/getPaymentStatement', methods=['GET'])
+def get_payment_statement():
+    file = h.get_payment_statement(.65, .7)
+    return Response(file.encode('utf-8-sig'), mimetype="text/plain",
+                    headers={"Content-Disposition":
+                                 "attachment;filename=payments.csv"})
 
 
 if __name__ == "__main__":
