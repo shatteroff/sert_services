@@ -168,7 +168,7 @@ class PsqlHelper:
             return None
 
     def insert_request(self, user_id, request_type, custom_code=None, product_type=None, doc_type=None,
-                       validity_period=None, add_info=None, request_id=None, files=None,short_id = None):
+                       validity_period=None, add_info=None, request_id=None, files=None, short_id=None):
         columns = ['user_id', 'request_type']
         values = [user_id, request_type]
         if custom_code:
@@ -234,24 +234,32 @@ class PsqlHelper:
         # print(query)
         self.__execute_query(query, commit=True)
 
-    def get_requests(self, top_count=None, user_id=None, request_id = None):
+    def get_requests(self, top_count=None, user_id=None, request_id=None, from_dt=None):
         # statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select u.name as user_name,r.* from public.requests r
                 join public.users u on r.user_id=u.id"""
         # where status in ({statuses})"""
         # and request_type = '{request_type}'"""
+        where_list = []
         if user_id:
-            query += f""" where user_id = '{user_id}'"""
+            where_list.append(f"user_id = '{user_id}'")
+            # query += f""" where user_id = '{user_id}'"""
         if request_id:
-            query += f" and r.id = '{request_id}'"
+            where_list.append(f"r.id = '{request_id}'")
+            # query += f" and r.id = '{request_id}'"
+        if from_dt:
+            where_list.append(f"r.update_dt > '{from_dt}'")
+        if where_list:
+            query += f" where {' and '.join(where_list)}"
         query += f""" order by insert_dt desc """
         if top_count:
             query += f""" limit {top_count}"""
+        print(query)
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
     def update_request_status(self, request_id, status):
-        query = f"""update public.requests set status = {status}
+        query = f"""update public.requests set status = {status}, update_dt = CURRENT_TIMESTAMP
                 where id = '{request_id}'"""
         self.__execute_query(query, commit=True)
 
@@ -405,7 +413,7 @@ $do$"""
         else:
             return None, None
 
-    def delete_files_from_add_request_info(self,request_id):
+    def delete_files_from_add_request_info(self, request_id):
         query = f"update add_request_info set required_files = '{{}}' where request_id = '{request_id}'"
         self.__execute_query(query, commit=True)
 
@@ -415,7 +423,7 @@ $do$"""
 
     def get_margin_view(self):
         query = "select * from public.margin_view"
-        records, columns = self.__execute_query(query,is_columns_name=True)
+        records, columns = self.__execute_query(query, is_columns_name=True)
         if records:
             return records, columns
         else:

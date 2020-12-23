@@ -2,6 +2,7 @@ import csv
 import json
 import time
 import uuid
+from datetime import datetime
 from io import StringIO
 
 import jwt
@@ -127,21 +128,23 @@ class Helper:
         return json.dumps({"request_registration": "ok"})
         # , "request_id": request_new_id})
 
-    def get_user_requests(self, limit, user_id=None):
+    def get_user_requests(self, limit, user_id=None, from_dt=None):
         if not limit:
             if user_id:
                 limit = 25
         requests = []
-        records, columns = self.ph.get_requests(limit, user_id=user_id)
+        execute_datetime = datetime.now().isoformat(timespec="seconds")
+        records, columns = self.ph.get_requests(limit, user_id=user_id, from_dt=from_dt)
         for record in records:
             request_data_dict = {}
             for i in range(len(columns)):
                 request_data_dict.update({columns[i]: record[i]})
             # request_data_dict.update({"date": record[len(columns) - 1].strftime('%d.%m.%Y %H:%M:%S')})
             request_data_dict.update({"date": request_data_dict.pop("insert_dt").isoformat(timespec="seconds")})
+            request_data_dict.pop('update_dt')
             requests.append(request_data_dict.copy())
         # if requests_dict:
-        json_to_send = {"requests": requests}
+        json_to_send = {"requests": requests, "time": execute_datetime}
         # else:
         #     json_to_send = {"requests": "empty"}
         return json.dumps(json_to_send, ensure_ascii=False)

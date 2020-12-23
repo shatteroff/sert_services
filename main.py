@@ -122,15 +122,16 @@ def get_user_requests(token_data):
     # if token_data:
     limit = request.args.get('limit')
     #     user_id = token_data.get('user_id')
+    from_dt = request.args.get('from')
     auth_user_id = token_data.get('user_id')
     role = token_data.get('role')
     if role:
         role = role.lower()
     if role == 'admin':
         user_id = request.args.get('userId')
-        return h.get_user_requests(limit, user_id=user_id)
+        return h.get_user_requests(limit, user_id=user_id, from_dt=from_dt)
     else:
-        return h.get_user_requests(limit, user_id=auth_user_id)
+        return h.get_user_requests(limit, user_id=auth_user_id, from_dt=from_dt)
 
 
 # else:
