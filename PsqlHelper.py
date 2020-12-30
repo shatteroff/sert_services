@@ -253,7 +253,7 @@ class PsqlHelper:
         query += f""" order by insert_dt desc """
         if top_count:
             query += f""" limit {top_count}"""
-        print(query)
+        # print(query)
         records, columns = self.__execute_query(query, is_columns_name=True)
         return records, columns
 
