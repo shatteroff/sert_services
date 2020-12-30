@@ -325,10 +325,14 @@ class PsqlHelper:
         self.__execute_query(query, commit=True)
 
     def get_jobs(self, top_count, user_id=None):
-        query = f"select * from public.projects"
+        # query = f"select * from public.projects"
+        # if user_id:
+        #     query += f" where user_id = '{user_id}' and customer_agreement != '{self.empty_request_type}' " \
+        #              f"and agent_agreement != '{self.empty_request_type}' and acts != '{self.empty_request_type}'"
+        # query += f" order by insert_dt desc limit {top_count}"""
+        query = f"select * from public.projects_view"
         if user_id:
-            query += f" where user_id = '{user_id}' and customer_agreement != '{self.empty_request_type}' " \
-                     f"and agent_agreement != '{self.empty_request_type}' and acts != '{self.empty_request_type}'"
+            query += f" where user_id = '{user_id}'"
         query += f" order by insert_dt desc limit {top_count}"""
         # print(query)
         records, columns = self.__execute_query(query, is_columns_name=True)
