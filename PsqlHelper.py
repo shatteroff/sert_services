@@ -236,8 +236,7 @@ class PsqlHelper:
 
     def get_requests(self, top_count=None, user_id=None, request_id=None, from_dt=None):
         # statuses = ','.join(f"'{status}'" for status in status_list)
-        query = f"""select u.name as user_name,r.* from public.requests r
-                join public.users u on r.user_id=u.id"""
+        query = f"""select * from public.requests_view"""
         # where status in ({statuses})"""
         # and request_type = '{request_type}'"""
         where_list = []
@@ -245,10 +244,10 @@ class PsqlHelper:
             where_list.append(f"user_id = '{user_id}'")
             # query += f""" where user_id = '{user_id}'"""
         if request_id:
-            where_list.append(f"r.id = '{request_id}'")
+            where_list.append(f"id = '{request_id}'")
             # query += f" and r.id = '{request_id}'"
         if from_dt:
-            where_list.append(f"r.update_dt > '{from_dt}'")
+            where_list.append(f"update_dt > '{from_dt}'")
         if where_list:
             query += f" where {' and '.join(where_list)}"
         query += f""" order by insert_dt desc """
