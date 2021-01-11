@@ -128,6 +128,17 @@ class Helper:
         return json.dumps({"request_registration": "ok"})
         # , "request_id": request_new_id})
 
+    def request_update(self, request_dict):
+        user_id = request_dict.get('user_id')
+        request_id = request_dict.get('request_id')
+        custom_code = request_dict.get('custom_code')
+        product_type = request_dict.get('product_type')
+        doc_type = request_dict.get('doc_type')
+        validity_period = request_dict.get('validity_period')
+        add_info = request_dict.get('add_info')
+        self.ph.update_request(user_id, request_id, custom_code, product_type, doc_type, validity_period, add_info)
+        return json.dumps({"request_update": "ok"})
+
     def get_user_requests(self, limit, user_id=None, from_dt=None):
         if not limit:
             if user_id:

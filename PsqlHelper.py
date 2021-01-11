@@ -210,10 +210,10 @@ class PsqlHelper:
         records = self.__execute_query(query, commit=True, is_return=True)
         return records[0][0]
 
-    def update_request(self, request_id, request_type, custom_code=None, product_type=None, doc_type=None,
+    def update_request(self, user_id, request_id, custom_code=None, product_type=None, doc_type=None,
                        validity_period=None, add_info=None):
-        columns = ['request_type']
-        values = [request_type]
+        columns = []
+        values = []
         if custom_code:
             columns.append('custom_code')
             values.append(custom_code)
@@ -230,7 +230,7 @@ class PsqlHelper:
             columns.append('add_info')
             values.append(add_info)
         sets = (f"{column}='{values}'" for column, values in zip(columns, values))
-        query = f"update public.requests set {','.join(sets)} where id = '{request_id}'"
+        query = f"update public.requests set {','.join(sets)} where id = '{request_id}' and user_id = '{user_id}'"
         # print(query)
         self.__execute_query(query, commit=True)
 
