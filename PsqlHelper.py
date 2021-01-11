@@ -377,9 +377,9 @@ $do$"""
         if records:
             return records[0][0]
 
-    def insert_add_request_info(self, request_id, required_files=None, price=None, duration=None):
-        columns = ['request_id']
-        values = [request_id]
+    def insert_add_request_info(self, request_id, user_id, required_files=None, price=None, duration=None):
+        columns = ['request_id', 'user_id']
+        values = [request_id, user_id]
         subquery_update = []
         if required_files:
             columns.append('required_files')

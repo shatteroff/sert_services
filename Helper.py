@@ -236,10 +236,11 @@ class Helper:
 
     def add_request_info(self, info_dict):
         request_id = info_dict.get('request_id')
+        user_id = info_dict.get('user_id')
         required_files = info_dict.get('required_files')
         price = info_dict.get('price')
         duration = info_dict.get('duration')
-        self.ph.insert_add_request_info(request_id, required_files, price, duration)
+        self.ph.insert_add_request_info(request_id, user_id, required_files, price, duration)
         return json.dumps({"update_request_info": "ok"})
 
     def get_request_info(self, request_id, user_id):
