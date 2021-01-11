@@ -242,9 +242,9 @@ class Helper:
         self.ph.insert_add_request_info(request_id, required_files, price, duration)
         return json.dumps({"update_request_info": "ok"})
 
-    def get_request_info(self, request_id):
+    def get_request_info(self, request_id, user_id):
         info_dict = {}
-        records, columns = self.ph.get_add_request_info(request_id)
+        records, columns = self.ph.get_add_request_info(request_id, user_id)
         if records:
             info_dict = dict(zip(columns, records))
             if info_dict.get('required_files') is None:

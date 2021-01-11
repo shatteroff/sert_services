@@ -196,9 +196,10 @@ def set_token(token_data):
 
 @app.route('/requests/getInfo', methods=['GET'])
 @check_for_token
-def get_request_info(*args):
+def get_request_info(token_data):
     request_id = request.args.get('id')
-    return h.get_request_info(request_id)
+    auth_user_id = token_data.get('user_id')
+    return h.get_request_info(request_id, auth_user_id)
 
 
 @app.route('/requests/addRequiredInfo', methods=['POST'])

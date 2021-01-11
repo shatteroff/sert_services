@@ -408,8 +408,8 @@ $do$"""
         print(query)
         self.__execute_query(query, commit=True)
 
-    def get_add_request_info(self, request_id):
-        query = f"select * from add_request_info where request_id = '{request_id}'"
+    def get_add_request_info(self, request_id, user_id):
+        query = f"select * from add_request_info where request_id = '{request_id}' and user_id = '{user_id}'"
         records, columns = self.__execute_query(query, is_columns_name=True)
         if records:
             return records[0], columns
