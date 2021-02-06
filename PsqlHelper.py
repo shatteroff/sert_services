@@ -377,7 +377,8 @@ $do$"""
         if records:
             return records[0][0]
 
-    def insert_add_request_info(self, request_id, user_id, required_files=None, price=None, duration=None):
+    def insert_add_request_info(self, request_id, user_id, required_files=None, price=None, duration=None,
+                                description=None):
         columns = ['request_id', 'user_id']
         values = [request_id, user_id]
         subquery_update = []
@@ -394,6 +395,10 @@ $do$"""
             columns.append('duration')
             values.append(duration)
             subquery_update.append(f"duration = {duration}")
+        if description:
+            columns.append('description')
+            values.append(description)
+            subquery_update.append(f"description = {description}")
         values = list(f"'{v}'" for v in values)
         query_insert = f"INSERT INTO public.add_request_info({','.join(columns)}) VALUES ({','.join(values)})"
         query = f"""DO
