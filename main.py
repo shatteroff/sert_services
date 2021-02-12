@@ -103,7 +103,7 @@ def get_user_info(token_data):
 
 @app.route('/users/getTemplatesPath', methods=['GET'])
 @check_for_token
-def get_user_info(token_data):
+def get_user_templates_path(token_data):
     user_id = token_data.get('user_id')
     return h.get_docs_template_path(user_id)
 
