@@ -103,6 +103,13 @@ class Helper:
             else:
                 return json.dumps({"registration": {"error": "please, fill in all required fields"}}), 500
 
+    def get_user_info(self, user_id):
+        record, columns = self.ph.get_user_info(user_id)
+        user_info_dict = {}
+        user_info_dict.update({column: info for column, info in zip(columns, record)})
+        user_info_dict.update({"registered": user_info_dict.pop("insert_dt").isoformat(timespec="seconds")})
+        return json.dumps(user_info_dict, ensure_ascii=False)
+
     def get_id(self, id_type):
         ids = self.ph.get_all_ids(id_type)
         id_new = uuid.uuid4()

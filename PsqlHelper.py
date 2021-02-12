@@ -61,27 +61,27 @@ class PsqlHelper:
             user_info = records[0]
             return user_info
 
-    def get_user_info(self, login, password):
-        query = f"""select u.id,r.role,req.id as request_id, pro.id as job_id from users u
-                left join public.roles r on u.id=r.user_id
-                left join requests req on req.user_id = u.id and req.request_type = '{self.empty_request_type}'
-                left join projects pro on pro.user_id = u.id and pro.customer_agreement = '{self.empty_request_type}'
-                and agent_agreement = '{self.empty_request_type}' and title = '{self.empty_request_type}'
-                """
-        try:
-            login = int(login)
-            query += f' where phone = {login}'
-        except ValueError:
-            query += f" where email = '{login}'"
-        query += f" and password = '{password}'"
-        records = self.__execute_query(query)
-        if len(records) > 1:
-            return 1
-        elif len(records) == 0:
-            return 0
-        else:
-            user_info = records[0]
-            return user_info
+    # def get_user_info(self, login, password):
+    #     query = f"""select u.id,r.role,req.id as request_id, pro.id as job_id from users u
+    #             left join public.roles r on u.id=r.user_id
+    #             left join requests req on req.user_id = u.id and req.request_type = '{self.empty_request_type}'
+    #             left join projects pro on pro.user_id = u.id and pro.customer_agreement = '{self.empty_request_type}'
+    #             and agent_agreement = '{self.empty_request_type}' and title = '{self.empty_request_type}'
+    #             """
+    #     try:
+    #         login = int(login)
+    #         query += f' where phone = {login}'
+    #     except ValueError:
+    #         query += f" where email = '{login}'"
+    #     query += f" and password = '{password}'"
+    #     records = self.__execute_query(query)
+    #     if len(records) > 1:
+    #         return 1
+    #     elif len(records) == 0:
+    #         return 0
+    #     else:
+    #         user_info = records[0]
+    #         return user_info
 
     def update_user_info(self, user_id, workplace=None, account_number=None):
         columns = []
@@ -146,9 +146,9 @@ class PsqlHelper:
         else:
             name = f"'{name}'"
         if not promo_code:
-            promo_code = f"'{promo_code}"
-        else:
             promo_code = 'null'
+        else:
+            promo_code = f"'{promo_code}"
         query = f"INSERT INTO public.users(phone, email, alias, name, password,promo_code)	" \
                 f"VALUES ({phone},{email},'{alias}',{name},'{password}',{promo_code})"
         print(query)
@@ -381,6 +381,11 @@ $do$"""
         records = self.__execute_query(query)
         if records:
             return records[0][0]
+
+    def get_user_info(self, user_id):
+        query = f"select * from users_view where id = '{user_id}'"
+        records, columns = self.__execute_query(query, is_columns_name=True)
+        return records[0], columns
 
     def insert_add_request_info(self, request_id, user_id, required_files=None, price=None, duration=None,
                                 description=None):

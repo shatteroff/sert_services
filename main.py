@@ -90,6 +90,17 @@ def add_user_info(token_data):
     return h.add_user_info(user_dict)
 
 
+@app.route('/users/getUserInfoById', methods=['GET'])
+@check_for_token
+def get_user_info(token_data):
+    user_id = request.args.get('id')
+    role = token_data.get('role')
+    if role == 'admin':
+        return h.get_user_info(user_id)
+    else:
+        return jsonify({"Access_error": "Insufficient rights to use the resource"}), 403
+
+
 @app.route('/requests/post', methods=['POST'])
 @check_for_token
 def post_request(token_data):
@@ -237,5 +248,5 @@ def auth(login, password):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=8000)
-    # app.run()
+    app.run(host='0.0.0.0')
+    # app.run(host='0.0.0.0',port=8000)
