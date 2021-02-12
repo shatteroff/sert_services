@@ -302,3 +302,7 @@ class Helper:
             return json.dumps({"promo": "ok"})
         else:
             return json.dumps({"promo": "wrong promo_code"})
+
+    def get_docs_template_path(self, user_id):
+        template_path = self.ph.get_docs_template_path(user_id)
+        return json.dumps({"templates_path": template_path},ensure_ascii=False)

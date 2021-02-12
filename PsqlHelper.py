@@ -154,6 +154,13 @@ class PsqlHelper:
         print(query)
         self.__execute_query(query, commit=True)
 
+    def get_docs_template_path(self, user_id):
+        query = f"""select org.docs_path from users u
+                    join promos pr on u.promo_code = pr.code
+                    join organizations org on pr.organization_id = org.id
+                    where u.id= '{user_id}'"""
+        return self.__execute_query(query)[0][0]
+
     def get_all_ids(self, id_type):
         ids = []
         query = f'select id from public.{id_type}'

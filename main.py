@@ -101,6 +101,13 @@ def get_user_info(token_data):
         return jsonify({"Access_error": "Insufficient rights to use the resource"}), 403
 
 
+@app.route('/users/getTemplatesPath', methods=['GET'])
+@check_for_token
+def get_user_info(token_data):
+    user_id = token_data.get('user_id')
+    return h.get_docs_template_path(user_id)
+
+
 @app.route('/requests/post', methods=['POST'])
 @check_for_token
 def post_request(token_data):
