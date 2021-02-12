@@ -65,11 +65,6 @@ def index():
     return 'Welcome to certification services main page!'
 
 
-@app.route('/auth/<login>/<password>', methods=['GET'])
-def auth(login, password):
-    return ph.get_login(login, password)
-
-
 @app.route('/login/post', methods=['POST'])
 def login():
     login_dict = request.get_json()
@@ -86,12 +81,13 @@ def registration():
     return h.user_registration(user_dict)
 
 
-@app.route('/getId', methods=['GET'])
+@app.route('/users/addInfo', methods=['POST'])
 @check_for_token
-def get_id(*args):
-    id_type = request.args.get('type')
-    if id_type:
-        return h.get_id(id_type)
+def add_user_info(token_data):
+    auth_user_id = token_data.get('user_id')
+    user_dict = request.get_json()
+    user_dict.update({'user_id': auth_user_id})
+    return h.add_user_info(user_dict)
 
 
 @app.route('/requests/post', methods=['POST'])
@@ -140,12 +136,34 @@ def get_user_requests(token_data):
     if role == 'admin':
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id, from_dt=from_dt)
+    elif role == 'expert':
+        user_id = request.args.get('userId')
+        return h.get_user_requests(limit, expert_id=user_id, from_dt=from_dt)
     else:
         return h.get_user_requests(limit, user_id=auth_user_id, from_dt=from_dt)
 
 
-# else:
-#     return json.dumps({'Authorization error': 'wrong token'}), 403
+@app.route('/requests/getInfo', methods=['GET'])
+@check_for_token
+def get_request_info(token_data):
+    request_id = request.args.get('id')
+    auth_user_id = token_data.get('user_id')
+    return h.get_request_info(request_id, auth_user_id)
+
+
+@app.route('/requests/addRequiredInfo', methods=['POST'])
+@check_for_token
+def add_request_info(*args):
+    info_dict = request.get_json()
+    return h.add_request_info(info_dict)
+
+
+@app.route('/requests/addFiles', methods=['POST'])
+@check_for_token
+def add_files_to_request(token_data):
+    info_dict = request.get_json()
+    info_dict.update({'user_id': token_data.get('user_id')})
+    return h.add_files_to_request(info_dict)
 
 
 @app.route('/jobs/post', methods=['POST'])
@@ -178,6 +196,11 @@ def get_user_jobs(token_data):
         return h.get_jobs(limit, user_id=auth_user_id)
 
 
+@app.route('/promos/checkCodeForExist', methods=['GET'])
+def check_promo_code():
+    return h.get_promo_code(request.args.get('code'))
+
+
 @app.route('/leaderboard/getLeaders', methods=['GET'])
 @check_for_token
 def get_leaderboard(*args):
@@ -194,44 +217,24 @@ def set_token(token_data):
     return h.set_token(token_dict)
 
 
-@app.route('/requests/getInfo', methods=['GET'])
-@check_for_token
-def get_request_info(token_data):
-    request_id = request.args.get('id')
-    auth_user_id = token_data.get('user_id')
-    return h.get_request_info(request_id, auth_user_id)
-
-
-@app.route('/requests/addRequiredInfo', methods=['POST'])
-@check_for_token
-def add_request_info(*args):
-    info_dict = request.get_json()
-    return h.add_request_info(info_dict)
-
-
-@app.route('/requests/addFiles', methods=['POST'])
-@check_for_token
-def add_files_to_request(token_data):
-    info_dict = request.get_json()
-    info_dict.update({'user_id': token_data.get('user_id')})
-    return h.add_files_to_request(info_dict)
-
-
-@app.route('/users/addInfo', methods=['POST'])
-@check_for_token
-def add_user_info(token_data):
-    auth_user_id = token_data.get('user_id')
-    user_dict = request.get_json()
-    user_dict.update({'user_id': auth_user_id})
-    return h.add_user_info(user_dict)
-
-
 @app.route('/users/getPaymentStatement', methods=['GET'])
 def get_payment_statement():
     file = h.get_payment_statement(.65, .7)
     return Response(file.encode('utf-8-sig'), mimetype="text/plain",
-                    headers={"Content-Disposition":
-                                 "attachment;filename=payments.csv"})
+                    headers={"Content-Disposition": "attachment;filename=payments.csv"})
+
+
+@app.route('/getId', methods=['GET'])
+@check_for_token
+def get_id(*args):
+    id_type = request.args.get('type')
+    if id_type:
+        return h.get_id(id_type)
+
+
+@app.route('/auth/<login>/<password>', methods=['GET'])
+def auth(login, password):
+    return ph.get_login(login, password)
 
 
 if __name__ == "__main__":

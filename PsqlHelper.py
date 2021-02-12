@@ -134,7 +134,7 @@ class PsqlHelper:
                 error_list.append('alias')
         return error_list
 
-    def insert_user(self, phone, email, alias, name, password):
+    def insert_user(self, phone, email, alias, name, password, promo_code):
         if not phone:
             phone = 'null'
         if not email:
@@ -145,9 +145,12 @@ class PsqlHelper:
             name = 'null'
         else:
             name = f"'{name}'"
-
-        query = f"INSERT INTO public.users(phone, email, alias, name, password)	" \
-                f"VALUES ({phone},{email},'{alias}',{name},'{password}')"
+        if not promo_code:
+            promo_code = f"'{promo_code}"
+        else:
+            promo_code = 'null'
+        query = f"INSERT INTO public.users(phone, email, alias, name, password,promo_code)	" \
+                f"VALUES ({phone},{email},'{alias}',{name},'{password}',{promo_code})"
         print(query)
         self.__execute_query(query, commit=True)
 
@@ -234,7 +237,7 @@ class PsqlHelper:
         # print(query)
         self.__execute_query(query, commit=True)
 
-    def get_requests(self, top_count=None, user_id=None, request_id=None, from_dt=None):
+    def get_requests(self, top_count=None, user_id=None, request_id=None, from_dt=None, expert_id=None):
         # statuses = ','.join(f"'{status}'" for status in status_list)
         query = f"""select * from public.requests_view"""
         # where status in ({statuses})"""
@@ -246,6 +249,8 @@ class PsqlHelper:
         if request_id:
             where_list.append(f"id = '{request_id}'")
             # query += f" and r.id = '{request_id}'"
+        if expert_id:
+            where_list.append(f"expert_id = '{expert_id}")
         if from_dt:
             where_list.append(f"update_dt > '{from_dt}'")
         if where_list:
@@ -436,3 +441,8 @@ $do$"""
             return records, columns
         else:
             return None, None
+
+    def get_promo_codes(self, promo_code):
+        query = f"select * from promos where code = '{promo_code}'"
+        records = self.__execute_query(query)
+        return records

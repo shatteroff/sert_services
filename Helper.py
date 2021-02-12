@@ -89,6 +89,7 @@ class Helper:
         alias = user_dict.get('alias')
         name = user_dict.get('name')
         password = user_dict.get('password')
+        promo_code = user_dict.get('promo_code')
         error_list = self.ph.get_exist_users(phone, email, alias)
         if error_list:
             # errors = ','.join(f'"{x}"' for x in error_list)
@@ -97,7 +98,7 @@ class Helper:
             return json_ex
         else:
             if alias and password and (phone or email):
-                self.ph.insert_user(phone, email, alias, name, password)
+                self.ph.insert_user(phone, email, alias, name, password, promo_code)
                 return json.dumps({"registration": "ok"})
             else:
                 return json.dumps({"registration": {"error": "please, fill in all required fields"}}), 500
@@ -139,13 +140,13 @@ class Helper:
         self.ph.update_request(user_id, request_id, custom_code, product_type, doc_type, validity_period, add_info)
         return json.dumps({"request_update": "ok"})
 
-    def get_user_requests(self, limit, user_id=None, from_dt=None):
+    def get_user_requests(self, limit, user_id=None, expert_id=None, from_dt=None):
         if not limit:
             if user_id:
                 limit = 25
         requests = []
         execute_datetime = datetime.now().isoformat(timespec="seconds")
-        records, columns = self.ph.get_requests(limit, user_id=user_id, from_dt=from_dt)
+        records, columns = self.ph.get_requests(limit, user_id=user_id, from_dt=from_dt, expert_id=expert_id)
         for record in records:
             request_data_dict = {}
             for i in range(len(columns)):
@@ -241,7 +242,7 @@ class Helper:
         price = info_dict.get('price')
         duration = info_dict.get('duration')
         description = info_dict.get('description')
-        self.ph.insert_add_request_info(request_id, user_id, required_files, price, duration,description)
+        self.ph.insert_add_request_info(request_id, user_id, required_files, price, duration, description)
         return json.dumps({"update_request_info": "ok"})
 
     def get_request_info(self, request_id, user_id):
@@ -287,3 +288,10 @@ class Helper:
             payment = record[2] * request_rate + record[3] * job_rate
             w.writerow([record[0], record[1], payment])
         return f.getvalue()
+
+    def get_promo_code(self, promo_code):
+        records = self.ph.get_promo_codes(promo_code)
+        if records:
+            return json.dumps({"promo": "ok"})
+        else:
+            return json.dumps({"promo": "wrong promo_code"})
