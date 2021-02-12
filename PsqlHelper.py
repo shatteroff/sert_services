@@ -148,7 +148,7 @@ class PsqlHelper:
         if not promo_code:
             promo_code = 'null'
         else:
-            promo_code = f"'{promo_code}"
+            promo_code = f"'{promo_code}'"
         query = f"INSERT INTO public.users(phone, email, alias, name, password,promo_code)	" \
                 f"VALUES ({phone},{email},'{alias}',{name},'{password}',{promo_code})"
         print(query)
