@@ -250,7 +250,7 @@ class PsqlHelper:
             where_list.append(f"id = '{request_id}'")
             # query += f" and r.id = '{request_id}'"
         if expert_id:
-            where_list.append(f"expert_id = '{expert_id}")
+            where_list.append(f"expert_id = '{expert_id}'")
         if from_dt:
             where_list.append(f"update_dt > '{from_dt}'")
         if where_list:

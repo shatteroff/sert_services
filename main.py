@@ -137,8 +137,7 @@ def get_user_requests(token_data):
         user_id = request.args.get('userId')
         return h.get_user_requests(limit, user_id=user_id, from_dt=from_dt)
     elif role == 'expert':
-        user_id = request.args.get('userId')
-        return h.get_user_requests(limit, expert_id=user_id, from_dt=from_dt)
+        return h.get_user_requests(limit, expert_id=auth_user_id, from_dt=from_dt)
     else:
         return h.get_user_requests(limit, user_id=auth_user_id, from_dt=from_dt)
 
@@ -238,5 +237,5 @@ def auth(login, password):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',port=8000)
     # app.run()
