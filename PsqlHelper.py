@@ -415,7 +415,7 @@ $do$"""
         if description:
             columns.append('description')
             values.append(description)
-            subquery_update.append(f"description = {description}")
+            subquery_update.append(f"description = '{description}'")
         values = list(f"'{v}'" for v in values)
         query_insert = f"INSERT INTO public.add_request_info({','.join(columns)}) VALUES ({','.join(values)})"
         query = f"""DO
