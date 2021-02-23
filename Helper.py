@@ -7,7 +7,7 @@ from io import StringIO
 
 import jwt
 
-from FirebaseHelper import FirebaseHelper
+# from FirebaseHelper import FirebaseHelper
 from PsqlHelper import PsqlHelper
 
 try:
@@ -18,7 +18,7 @@ except:
 
 class Helper:
     ph = PsqlHelper()
-    fbh = FirebaseHelper()
+    # fbh = FirebaseHelper()
 
     @staticmethod
     def get_token(payload, secret_key):
@@ -174,12 +174,12 @@ class Helper:
         status = int(request_dict.get('status'))
         notification = bool(request_dict.get('notify'))
         self.ph.update_request_status(request_id, status)
-        if notification:
-            client_token = self.ph.get_notification_token(user_id)
-            if client_token:
-                title = 'Статус Вашего запроса был изменен'
-                # body = 'Зайдите в приложение, чтобы узнать подробности'
-                message_id = self.fbh.send_notification(client_token, title, request_id)
+        # if notification:
+        #     client_token = self.ph.get_notification_token(user_id)
+        #     if client_token:
+        #         title = 'Статус Вашего запроса был изменен'
+        #         # body = 'Зайдите в приложение, чтобы узнать подробности'
+        #         message_id = self.fbh.send_notification(client_token, title, request_id)
         return json.dumps({"request_update": "ok"})
 
     def job_registration(self, job_dict):
