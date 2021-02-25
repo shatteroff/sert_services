@@ -139,7 +139,7 @@ class PsqlHelper:
         values = [alias, password]
         if phone:
             columns.append('phone')
-            values.append(str(phone))
+            values.append(phone)
         if email:
             columns.append('email')
             values.append(email)
@@ -149,6 +149,7 @@ class PsqlHelper:
         if promo_code:
             columns.append('promo_code')
             values.append(promo_code)
+        values = list(f"'{v}'" for v in values)
         query = f"INSERT INTO public.users({','.join(columns)}) VALUES ({','.join(values)})"
         print(query)
         self.__execute_query(query, commit=True)
