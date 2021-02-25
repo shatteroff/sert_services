@@ -135,22 +135,21 @@ class PsqlHelper:
         return error_list
 
     def insert_user(self, phone, email, alias, name, password, promo_code):
-        if not phone:
-            phone = 'null'
-        if not email:
-            email = 'null'
-        else:
-            email = f"'{email}'"
-        if not name:
-            name = 'null'
-        else:
-            name = f"'{name}'"
-        if not promo_code:
-            promo_code = 'null'
-        else:
-            promo_code = f"'{promo_code}'"
-        query = f"INSERT INTO public.users(phone, email, alias, name, password,promo_code)	" \
-                f"VALUES ({phone},{email},'{alias}',{name},'{password}',{promo_code})"
+        columns = ['alias', 'password']
+        values = [alias, password]
+        if phone:
+            columns.append('phone')
+            values.append(phone)
+        if email:
+            columns.append('email')
+            values.append(email)
+        if name:
+            columns.append('name')
+            values.append(name)
+        if promo_code:
+            columns.append('promo_code')
+            values.append(promo_code)
+        query = f"INSERT INTO public.users({','.join(columns)}) VALUES ({','.join(values)})"
         print(query)
         self.__execute_query(query, commit=True)
 
