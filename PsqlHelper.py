@@ -139,7 +139,7 @@ class PsqlHelper:
         values = [alias, password]
         if phone:
             columns.append('phone')
-            values.append(phone)
+            values.append(str(phone))
         if email:
             columns.append('email')
             values.append(email)
