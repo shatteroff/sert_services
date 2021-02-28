@@ -228,6 +228,6 @@ class Helper:
     def get_margins(self, limit):
         if not limit:
             limit = 15
-        leaders = self.__session.query(Margin).filter(Margin.margin > 0).order_by(Leader.full_price.desc()).limit(
+        leaders = self.__session.query(Margin).filter(Margin.margin > 0).order_by(Margin.full_price.desc()).limit(
             limit).all()
         return json.dumps(leaders, cls=AlchemyEncoder, ensure_ascii=False)
