@@ -2,13 +2,11 @@ import json
 from functools import wraps
 
 import jwt
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from werkzeug.exceptions import HTTPException
 
-from PsqlHelper import PsqlHelper
 from SqlAlchemyHelper import Helper
 
 try:
@@ -23,13 +21,12 @@ app.config.update(
     MAIL_SERVER='smtp.mail.ru',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME='info@certificate-plus.ru',
-    MAIL_DEFAULT_SENDER='info@certificate-plus.ru',
-    MAIL_PASSWORD='36484brabley'
+    MAIL_USERNAME=Config.MAIL_USERNAME,
+    MAIL_DEFAULT_SENDER=Config.MAIL_USERNAME,
+    MAIL_PASSWORD=Config.MAIL_PASSWORD
 )
 CORS(app)
 mail = Mail(app)
-ph = PsqlHelper()
 h = Helper(app)
 h.db.init_app(app)
 auth_header_str = 'Authorization'
