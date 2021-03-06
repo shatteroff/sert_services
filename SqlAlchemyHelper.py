@@ -75,7 +75,8 @@ class Helper:
         user = self.__session.query(User).filter_by(**user_dict).one_or_none()
         if user:
             contact = user.email if user.email else user.phone
-            payload = {"user_id": user.id, "user_name": user.name, "contact": contact,"yandex_token":Config.YANDEX_TOKEN}
+            payload = {"user_id": user.id, "user_name": user.name, "contact": contact,
+                       "yandex_token": Config.YANDEX_TOKEN}
             if user.role_:
                 role = user.role_.role
                 payload.update({"role": role})
@@ -216,7 +217,7 @@ class Helper:
         #     query = query.filter(Job.date > from_dt)
         query = query.order_by(Job.date.desc()).limit(limit)
         jobs = self.__session.query(Job).from_statement(query).all()
-        return json.dumps(jobs, cls=AlchemyEncoder, ensure_ascii=False)
+        return json.dumps({"jobs": jobs}, cls=AlchemyEncoder, ensure_ascii=False)
 
     @exec_time
     def check_promo_code_for_exists(self, promo_code):
@@ -236,4 +237,4 @@ class Helper:
             limit = 15
         leaders = self.__session.query(Margin).filter(Margin.margin > 0).order_by(Margin.full_price.desc()).limit(
             limit).all()
-        return json.dumps(leaders, cls=AlchemyEncoder, ensure_ascii=False)
+        return json.dumps({"leaderboard": leaders}, cls=AlchemyEncoder, ensure_ascii=False)
