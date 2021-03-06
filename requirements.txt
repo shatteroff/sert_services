@@ -5,3 +5,4 @@ Flask-Cors==3.0.10
 requests~=2.25.1
 flask~=1.1.2
 werkzeug~=1.0.1
+psycopg2==2.8.6
