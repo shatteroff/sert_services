@@ -30,7 +30,7 @@ class AlchemyEncoder(json.JSONEncoder):
                         fields[field] = data
                 except TypeError:
                     # print(f"Can't encode var {field} type {type(data)}")
-                    _ = 0
+                    pass
             # a json-encodable dict
             return fields
 
