@@ -38,6 +38,7 @@ class Request(db.Model):
 
     id = Column(UUID, primary_key=True, default=str(uuid.uuid4()))
     user_id = Column(UUID, ForeignKey('users.id'), primary_key=True)
+    request_email = Column(String)
     short_id = Column(String)
     request_type = Column(String(10))
     custom_code = Column(BigInteger)

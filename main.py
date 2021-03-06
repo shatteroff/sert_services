@@ -4,7 +4,7 @@ from functools import wraps
 import jwt
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_mail import Mail, Message
+# from flask_mail import Mail, Message
 from werkzeug.exceptions import HTTPException
 
 from SqlAlchemyHelper import Helper
@@ -26,7 +26,7 @@ app.config.update(
     MAIL_PASSWORD=Config.MAIL_PASSWORD
 )
 CORS(app)
-mail = Mail(app)
+# mail = Mail(app)
 h = Helper(app)
 h.db.init_app(app)
 auth_header_str = 'Authorization'
@@ -214,12 +214,12 @@ def get_leaderboard(*args):
 #                     headers={"Content-Disposition": "attachment;filename=payments.csv"})
 
 
-@app.route('/email/test')
-def send_mail():
-    msg = Message("Feedback", recipients=['zapros@certificate-plus.ru'])
-    msg.body = "Привет котлета!"
-    mail.send(msg)
-    return "msg send"
+# @app.route('/email/test')
+# def send_mail():
+#     msg = Message("Feedback", recipients=['zapros@certificate-plus.ru'])
+#     msg.body = "Привет котлета!"
+#     mail.send(msg)
+#     return "msg send"
 
 
 if __name__ == "__main__":
