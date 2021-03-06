@@ -4,11 +4,15 @@ from datetime import datetime
 from functools import wraps
 
 import jwt
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from sqlalchemy.orm import Query
-
 from alchemy_encoder import AlchemyEncoder
 from db_models import User, Request, PromoCode, AdditionalRequestInfo, Job, Leader, Margin, db
+
+try:
+    from Config import Config
+except:
+    from Config_local import Config
 
 
 def exec_time(func):
@@ -40,17 +44,19 @@ class Helper:
     @exec_time
     def user_registration(self, user_dict):
         errors = []
-        phone = user_dict.get('phone')
+        phone = int(user_dict.get('phone'))
         email = user_dict.get('email')
         alias = user_dict.get('alias')
-        users = self.__session.query(User).filter(or_(User.phone == phone, User.email == email, User.alias == alias))
+        users = self.__session.query(User).filter(
+            or_(User.phone == phone, func.lower(User.email) == func.lower(email),
+                func.lower(User.alias) == func.lower(alias))).all()
         if users:
             for user in users:
                 if user.phone == phone:
                     errors.append('phone')
-                if user.email == email:
+                if user.email.lower() == email.lower():
                     errors.append('email')
-                if user.alias == alias:
+                if user.alias.lower() == alias.lower():
                     errors.append('alias')
         else:
             user = User(**user_dict)
@@ -69,7 +75,7 @@ class Helper:
         user = self.__session.query(User).filter_by(**user_dict).one_or_none()
         if user:
             contact = user.email if user.email else user.phone
-            payload = {"user_id": user.id, "user_name": user.name, "contact": contact}
+            payload = {"user_id": user.id, "user_name": user.name, "contact": contact,"yandex_token":Config.YANDEX_TOKEN}
             if user.role_:
                 role = user.role_.role
                 payload.update({"role": role})
