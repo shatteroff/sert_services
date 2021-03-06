@@ -104,7 +104,7 @@ class Helper:
 
     @exec_time
     def request_registration(self, request_dict):
-        name = request_dict.pop('name')
+        name = request_dict.pop('user_name')
         request_dict.update({"short_id": "".join([x[0] for x in name.split(" ")]) + str(int(time.time())),
                              "id": request_dict.pop('request_id')})
         request = Request(**request_dict)
