@@ -53,7 +53,7 @@ def check_for_token(func):
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
             data = func(token_data)
-            print(f"Token data:\n{json.dumps(token_data, ensure_ascii=False)}")
+            print(f"Token data: {json.dumps(token_data, ensure_ascii=False)}")
             # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
         except jwt.exceptions.PyJWTError:
@@ -65,9 +65,7 @@ def check_for_token(func):
 @app.after_request
 def print_incoming_message(data):
     incoming_data = f"{request.data.decode('utf-8')}"
-    if incoming_data:
-        incoming_data = '\n' + incoming_data
-    else:
+    if not incoming_data:
         incoming_data = 'Empty data'
     print(f"Incoming data: {incoming_data}")
     return data
