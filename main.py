@@ -21,9 +21,9 @@ app.config.update(
     MAIL_SERVER='smtp.mail.ru',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME=Config.MAIL_USERNAME,
-    MAIL_DEFAULT_SENDER=Config.MAIL_USERNAME,
-    MAIL_PASSWORD=Config.MAIL_PASSWORD
+    # MAIL_USERNAME=Config.MAIL_USERNAME,
+    # MAIL_DEFAULT_SENDER=Config.MAIL_USERNAME,
+    # MAIL_PASSWORD=Config.MAIL_PASSWORD
 )
 CORS(app)
 # mail = Mail(app)
@@ -52,8 +52,8 @@ def check_for_token(func):
             return jsonify({'Authorization error': 'Missing token'}), 403
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
-            print(f"Token data:\n{json.dumps(token_data, ensure_ascii=False)}")
             data = func(token_data)
+            print(f"Token data:\n{json.dumps(token_data, ensure_ascii=False)}")
             # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
         except jwt.exceptions.PyJWTError:
@@ -62,14 +62,15 @@ def check_for_token(func):
     return wrapped
 
 
-@app.before_request
-def print_incoming_message():
+@app.after_request
+def print_incoming_message(data):
     incoming_data = f"{request.data.decode('utf-8')}"
     if incoming_data:
         incoming_data = '\n' + incoming_data
     else:
         incoming_data = 'Empty data'
     print(f"Incoming data: {incoming_data}")
+    return data
 
 
 @app.route('/')
@@ -235,5 +236,7 @@ def get_leaderboard(*args):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
-    # app.run(host='0.0.0.0', port=8000)
+    if Config.port:
+        app.run(host='0.0.0.0', port=Config.port)
+    else:
+        app.run(host='0.0.0.0')

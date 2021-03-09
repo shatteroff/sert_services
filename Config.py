@@ -8,3 +8,4 @@ class Config:
     YANDEX_TOKEN = os.environ['YANDEX_TOKEN']
     MAIL_USERNAME = os.environ['MAIL_USERNAME']
     MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
+    port = None
