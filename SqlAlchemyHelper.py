@@ -20,8 +20,8 @@ def exec_time(func):
     def wrapped(*args, **kwargs):
         start_time = time.time()
         data = func(*args, **kwargs)
-        work_time = int((time.time() - start_time) * 1000)
-        print(f'Query execution time ', work_time, 'ms')
+        # work_time = int((time.time() - start_time) * 1000)
+        # print(f'Query execution time ', work_time, 'ms')
         return data
 
     return wrapped
