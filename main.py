@@ -52,6 +52,7 @@ def check_for_token(func):
             return jsonify({'Authorization error': 'Missing token'}), 403
         try:
             token_data = jwt.decode(token, app.config['SECRET_KEY'])
+            print(f"Token data:\n{json.dumps(token_data, ensure_ascii=False)}")
             data = func(token_data)
             # print('Execution time ', int((time.time() - start_time) * 1000))
             return data
@@ -59,6 +60,16 @@ def check_for_token(func):
             return jsonify({'Authorization error': 'Invalid token'}), 403
 
     return wrapped
+
+
+@app.before_request
+def print_incoming_message():
+    incoming_data = f"{request.data.decode('utf-8')}"
+    if incoming_data:
+        incoming_data = '\n' + incoming_data
+    else:
+        incoming_data = 'Empty data'
+    print(f"Incoming data: {incoming_data}")
 
 
 @app.route('/')
