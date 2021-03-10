@@ -79,6 +79,8 @@ def index():
 @app.route('/login/post', methods=['POST'])
 def login():
     login_dict = request.get_json()
+    if login_dict.get("firebase_token"):
+        login_dict.pop("firebase_token")
     token = h.user_login(login_dict)
     return token
 
