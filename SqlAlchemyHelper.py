@@ -44,16 +44,22 @@ class Helper:
     @exec_time
     def user_registration(self, user_dict):
         errors = []
-        phone = int(user_dict.get('phone'))
         email = user_dict.get('email')
         alias = user_dict.get('alias')
-        users = self.__session.query(User).filter(
-            or_(User.phone == phone, func.lower(User.email) == func.lower(email),
-                func.lower(User.alias) == func.lower(alias))).all()
+        query = self.__session.query(User)
+        if user_dict.get('phone'):
+            phone = int(user_dict.get('phone'))
+            query = query.filter(or_(User.phone == phone, func.lower(User.email) == func.lower(email),
+                                     func.lower(User.alias) == func.lower(alias)))
+        else:
+            query = query.filter(
+                or_(func.lower(User.email) == func.lower(email), func.lower(User.alias) == func.lower(alias)))
+        users = query.all()
         if users:
             for user in users:
-                if user.phone == phone:
-                    errors.append('phone')
+                if user_dict.get('phone'):
+                    if user.phone == phone:
+                        errors.append('phone')
                 if user.email.lower() == email.lower():
                     errors.append('email')
                 if user.alias.lower() == alias.lower():
