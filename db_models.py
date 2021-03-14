@@ -20,7 +20,7 @@ class User(db.Model):
     password = Column(String)
     insert_dt = Column(DateTime(timezone=True), default=datetime.utcnow())
     workplace = Column(String)
-    promo_code = Column(String, ForeignKey('promos.code'))
+    promo_code = Column(String, ForeignKey('promos.code'), default='default')
 
     promo_ = relationship("PromoCode", foreign_keys=[promo_code], backref="users_with_promo_")
     role_ = relationship("Role", uselist=False)
