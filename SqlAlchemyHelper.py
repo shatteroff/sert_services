@@ -80,8 +80,8 @@ class Helper:
             user_dict.update({"email": login})
         user = self.__session.query(User).filter_by(**user_dict).one_or_none()
         if user:
-            contact = user.email if user.email else user.phone
-            payload = {"user_id": user.id, "user_name": user.name, "contact": contact,
+            contact = user.email
+            payload = {"user_id": user.id, "user_name": user.alias, "contact": contact,
                        "yandex_token": Config.YANDEX_TOKEN}
             if user.role_:
                 role = user.role_.role
@@ -118,7 +118,7 @@ class Helper:
     @exec_time
     def request_registration(self, request_dict):
         name = request_dict.pop('user_name')
-        request_dict.update({"short_id": "".join([x[0] for x in name.split(" ")]) + str(int(time.time())),
+        request_dict.update({"short_id": name[:3] + str(int(time.time())),
                              "id": request_dict.pop('request_id')})
         request = Request(**request_dict)
         self.__session.add(request)
@@ -165,7 +165,7 @@ class Helper:
         files += request.files
         request.files = list(set(files))
         self.__session.commit()
-        return json.dumps({"files_upload": "success"})
+        return json.dumps({"files_upload": "ok"})
 
     @exec_time
     def add_request_info(self, request_dict):

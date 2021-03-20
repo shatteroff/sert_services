@@ -78,6 +78,7 @@ def index():
 
 @app.route('/login/post', methods=['POST'])
 def login():
+    # TODO добавить в токен алиас если нет ФИО, в контакты добавялть емейл
     login_dict = request.get_json()
     if login_dict.get("firebase_token"):
         login_dict.pop("firebase_token")
@@ -149,6 +150,7 @@ def update_request_status(token_data):
 @app.route('/requests/getByUserId', methods=['GET'])
 @check_for_token
 def get_user_requests(token_data):
+    # TODO добавлять алиас если нет ФИО
     user_id = request.args.get('userId')
     limit = request.args.get('limit')
     from_dt = request.args.get('from')

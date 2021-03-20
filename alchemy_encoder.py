@@ -10,7 +10,7 @@ class AlchemyEncoder(json.JSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, Request):
-            obj.user_name = obj.user_.name
+            obj.user_name = obj.user_.name if obj.user_.name else obj.user_.alias
         elif isinstance(obj, Margin):
             obj.name = obj.user_.name
             obj.workplace = obj.user_.workplace
