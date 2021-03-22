@@ -78,7 +78,6 @@ def index():
 
 @app.route('/login/post', methods=['POST'])
 def login():
-    # TODO добавить в токен алиас если нет ФИО, в контакты добавялть емейл
     login_dict = request.get_json()
     if login_dict.get("firebase_token"):
         login_dict.pop("firebase_token")
@@ -143,14 +142,12 @@ def update_request(token_data):
 @check_for_token
 def update_request_status(token_data):
     request_dict = request.get_json()
-    # TODO add user_id in admin
     return h.request_update(request_dict)
 
 
 @app.route('/requests/getByUserId', methods=['GET'])
 @check_for_token
 def get_user_requests(token_data):
-    # TODO добавлять алиас если нет ФИО
     user_id = request.args.get('userId')
     limit = request.args.get('limit')
     from_dt = request.args.get('from')
@@ -219,7 +216,8 @@ def check_promo_code():
 @check_for_token
 def get_leaderboard(*args):
     limit = request.args.get('limit')
-    return h.get_margins(limit)
+    # return h.get_margins(limit)
+    return h.get_leaderboard(limit)
 
 
 # @app.route('/users/getPaymentStatement', methods=['GET'])

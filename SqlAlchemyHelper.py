@@ -234,8 +234,10 @@ class Helper:
     def get_leaderboard(self, limit=None):
         if not limit:
             limit = 15
-        leaders = self.__session.query(Leader).order_by(Leader.full_price.desc()).limit(limit).all()
-        return json.dumps(leaders, cls=AlchemyEncoder, ensure_ascii=False)
+        leaders = self.__session.query(Leader).join(User).filter(Leader.margin > 0,
+                                                                 User.is_in_leaderboard == True).order_by(
+            Leader.full_price.desc()).limit(limit).all()
+        return json.dumps({"leaderboard": leaders}, cls=AlchemyEncoder, ensure_ascii=False)
 
     @exec_time
     def get_margins(self, limit):

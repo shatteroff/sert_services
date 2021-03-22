@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, ARRAY, ForeignKeyConstraint
+from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, ARRAY, ForeignKeyConstraint, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
 
@@ -21,6 +21,7 @@ class User(db.Model):
     insert_dt = Column(DateTime(timezone=True), default=datetime.utcnow())
     workplace = Column(String)
     promo_code = Column(String, ForeignKey('promos.code'), default='default')
+    is_in_leaderboard = Column(Boolean, default=False)
 
     promo_ = relationship("PromoCode", foreign_keys=[promo_code], backref="users_with_promo_")
     role_ = relationship("Role", uselist=False)
@@ -121,7 +122,7 @@ class Leader(db.Model):
     margin = Column(BigInteger)
     full_price = Column(BigInteger)
     workplace = Column(String)
-
+    alias = Column(String(20), nullable=False)
     user_ = relationship(User, uselist=False)
 
 
