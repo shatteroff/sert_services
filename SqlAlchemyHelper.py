@@ -118,8 +118,8 @@ class Helper:
     @exec_time
     def request_registration(self, request_dict):
         name = request_dict.pop('user_name')
-        request_dict.update({"short_id": name[:3] + str(int(time.time())),
-                             "id": request_dict.pop('request_id')})
+        request_dict.update({"short_id": name[:3] + str(int(time.time())), "id": request_dict.pop('request_id'),
+                             "date": datetime.utcnow(), "update_dt": datetime.utcnow()})
         request = Request(**request_dict)
         self.__session.add(request)
         self.__session.commit()
@@ -134,6 +134,7 @@ class Helper:
                 filter_dict.update({'id': request_dict.pop(key)})
             else:
                 filter_dict.update({key: request_dict.pop(key)})
+        request_dict.update({"update_dt": datetime.utcnow()})
         res = self.__session.query(Request).filter_by(**filter_dict).update(request_dict, synchronize_session=False)
         self.__session.commit()
         return json.dumps({"request_update": "ok"})
