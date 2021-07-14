@@ -161,11 +161,17 @@ class Helper:
     @exec_time
     def add_files_to_request(self, request_dict):
         files = request_dict.pop("files")
+        request_dict_copy = request_dict.copy()
         request_dict.update({"id": request_dict.pop("request_id")})
         request = self.__session.query(Request).filter_by(**request_dict).one()
         files += request.files
         request.files = list(set(files))
+
+        request_add_info = self.__session.query(AdditionalRequestInfo).filter_by(**request_dict_copy).one_or_none()
+        if request_add_info:
+            request_add_info.required_files = []
         self.__session.commit()
+
         return json.dumps({"files_upload": "ok"})
 
     @exec_time
