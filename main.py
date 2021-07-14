@@ -163,6 +163,11 @@ def get_user_requests(token_data):
 @check_for_token
 def get_request_info(token_data):
     filter_dict = {'request_id': request.args.get('id'), 'user_id': token_data.get('user_id')}
+    role = token_data.get('role')
+    if role:
+        role = role.lower()
+        if role == 'admin':
+            filter_dict.update({'user_id': request.args.get('user_id')})
     return h.get_request_info(filter_dict)
 
 
