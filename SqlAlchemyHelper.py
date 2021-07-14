@@ -142,7 +142,7 @@ class Helper:
     @exec_time
     def get_requests(self, user_id=None, auth_user_id=None, role=None, from_dt=None, limit=None):
         if not limit:
-            limit = 25
+            limit = Config.limit
         query = self.__session.query(Request).join(User).filter_by(id=auth_user_id)
         if role == 'expert':
             query = self.__session.query(Request).join(User).join(PromoCode,
