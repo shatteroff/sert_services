@@ -134,3 +134,24 @@ class Margin(db.Model):
     full_price = Column(BigInteger)
 
     user_ = relationship(User, uselist=False)
+
+
+class Payment(db.Model):
+    __tablename__ = 'payments'
+
+    user_id = Column(UUID, ForeignKey(User.id), primary_key=True)
+    account_number = Column(BigInteger, nullable=False)
+    projects = Column(ARRAY(UUID), nullable=False)
+    amount = Column(Integer, nullable=False)
+
+
+class StatisticView(db.Model):
+    __tablename__ = 'statistic_view'
+
+    id = Column(UUID, primary_key=True)
+    req_started = Column(BigInteger)
+    req_ended = Column(BigInteger)
+    req_new = Column(BigInteger)
+    job_self = Column(BigInteger)
+    job_req = Column(BigInteger)
+    balance = Column(BigInteger)

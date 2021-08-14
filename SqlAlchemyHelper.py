@@ -7,7 +7,7 @@ import jwt
 from sqlalchemy import or_, func
 from sqlalchemy.orm import Query
 from alchemy_encoder import AlchemyEncoder
-from db_models import User, Request, PromoCode, AdditionalRequestInfo, Job, Leader, Margin, db
+from db_models import User, Request, PromoCode, AdditionalRequestInfo, Job, Leader, Margin, db, StatisticView, Payment
 
 try:
     from Config import Config
@@ -253,3 +253,13 @@ class Helper:
         leaders = self.__session.query(Margin).filter(Margin.margin > 0).order_by(Margin.full_price.desc()).limit(
             limit).all()
         return json.dumps({"leaderboard": leaders}, cls=AlchemyEncoder, ensure_ascii=False)
+
+    def get_statistic(self, user_id):
+        statistic = self.__session.query(StatisticView).filter(StatisticView.id == user_id).one()
+        return json.dumps(statistic, cls=AlchemyEncoder, ensure_ascii=False)
+
+    def add_payments(self, payment_dict):
+        payment = Payment(**payment_dict)
+        self.__session.add(payment)
+        self.__session.commit()
+        return json.dumps({"result": "success"})

@@ -118,6 +118,20 @@ def get_user_templates_path(token_data):
     return h.get_docs_template_path(user_id)
 
 
+@app.route('/users/getStatistic', methods=['GET'])
+@check_for_token
+def get_user_statistic(token_data):
+    # user_id = request.args.get('user_id')
+    user_id = token_data.get('user_id')
+    return h.get_statistic(user_id)
+
+
+@app.route('/payments', methods=['POST'])
+@check_for_token
+def post_payment(token_data):
+    return h.add_payments(request.get_json())
+
+
 @app.route('/requests/post', methods=['POST'])
 @check_for_token
 def post_request(token_data):
