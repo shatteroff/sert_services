@@ -109,6 +109,7 @@ class PromoCode(db.Model):
     code = Column(String, primary_key=True)
     expert_id = Column(UUID, ForeignKey(User.id))
     organization_id = Column(UUID, ForeignKey(Organization.id))
+    reward = Column(Integer)
 
     expert_user_ = relationship(User, foreign_keys=[expert_id], backref=backref("expert_promo_", uselist=False))
     organization_ = relationship(Organization, backref=backref("organization_promo_", uselist=False))

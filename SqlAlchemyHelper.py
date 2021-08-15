@@ -68,7 +68,14 @@ class Helper:
         else:
             user = User(**user_dict)
             self.__session.add(user)
-            self.__session.commit()
+            promo_code = user_dict.get('promo_code')
+            if promo_code is not None:
+                promo = self.__session.query(PromoCode.reward).filter_by(code=promo_code).one()
+                if promo[0] is not None:
+                    job = Job(user_id=user.id, title=f'PROMO{promo[0]}', custom_code=119, client_price=promo[0],
+                              cost_price=0)
+                    self.__session.add(job)
+                    self.__session.commit()
         return json.dumps({"registration": "ok" if not errors else {"errors": list(set(errors))}})
 
     @exec_time
@@ -259,7 +266,8 @@ class Helper:
     def get_statistic(self, user_id):
         statistic = self.__session.query(StatisticView).filter(StatisticView.id == user_id).one()
         jobs = self.__session.query(Job.id).filter(Job.user_id == user_id, Job.is_paid == False).all()
-        return json.dumps({'statistic': statistic, "jobs": [job[0] for job in jobs]}, cls=AlchemyEncoder, ensure_ascii=False)
+        return json.dumps({'statistic': statistic, "jobs": [job[0] for job in jobs]}, cls=AlchemyEncoder,
+                          ensure_ascii=False)
 
     def add_payments(self, payment_dict):
         payment = Payment(**payment_dict)
