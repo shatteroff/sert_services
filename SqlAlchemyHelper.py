@@ -4,6 +4,7 @@ from datetime import datetime
 from functools import wraps
 
 import jwt
+import sqlalchemy
 from sqlalchemy import or_, func
 from sqlalchemy.orm import Query
 from alchemy_encoder import AlchemyEncoder
@@ -262,5 +263,11 @@ class Helper:
     def add_payments(self, payment_dict):
         payment = Payment(**payment_dict)
         self.__session.add(payment)
-        self.__session.commit()
-        return json.dumps({"result": "success"})
+        result = "success"
+        try:
+            self.__session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            print(e)
+            if 'psycopg2.errors.UniqueViolation' in str(e):
+                result = 'exist'
+        return json.dumps({"result": result})
