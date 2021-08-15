@@ -265,7 +265,8 @@ class Helper:
 
     def get_statistic(self, user_id):
         statistic = self.__session.query(StatisticView).filter(StatisticView.id == user_id).one()
-        jobs = self.__session.query(Job.id).filter(Job.user_id == user_id, Job.is_paid == False).all()
+        jobs = self.__session.query(Job.id).filter(Job.user_id == user_id, Job.is_paid == False,
+                                                   Job.title.notlike('PROMO%')).all()
         return json.dumps({'statistic': statistic, "jobs": [job[0] for job in jobs]}, cls=AlchemyEncoder,
                           ensure_ascii=False)
 
