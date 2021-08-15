@@ -229,6 +229,7 @@ class Helper:
             query = Query(Job)
         # if from_dt:
         #     query = query.filter(Job.date > from_dt)
+        query = query.filter(Job.title.notlike('PROMO%'))
         query = query.order_by(Job.date.desc()).limit(limit)
         jobs = self.__session.query(Job).from_statement(query).all()
         return json.dumps({"jobs": jobs}, cls=AlchemyEncoder, ensure_ascii=False)
