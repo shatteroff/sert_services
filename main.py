@@ -119,10 +119,10 @@ def get_user_templates_path(token_data):
 
 
 @app.route('/users/getStatistic', methods=['GET'])
-# @check_for_token
-def get_user_statistic():
-    user_id = request.args.get('user_id')
-    # user_id = token_data.get('user_id')
+@check_for_token
+def get_user_statistic(token_data):
+    # user_id = request.args.get('user_id')
+    user_id = token_data.get('user_id')
     return h.get_statistic(user_id)
 
 
