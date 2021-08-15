@@ -256,7 +256,8 @@ class Helper:
 
     def get_statistic(self, user_id):
         statistic = self.__session.query(StatisticView).filter(StatisticView.id == user_id).one()
-        return json.dumps(statistic, cls=AlchemyEncoder, ensure_ascii=False)
+        jobs = self.__session.query(Job.id).filter(Job.user_id == user_id, Job.is_paid == False).all()
+        return json.dumps({'statistic': statistic, "jobs": [job[0] for job in jobs]}, cls=AlchemyEncoder, ensure_ascii=False)
 
     def add_payments(self, payment_dict):
         payment = Payment(**payment_dict)

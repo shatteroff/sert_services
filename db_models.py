@@ -71,6 +71,7 @@ class Job(db.Model):
     client_price = Column(Integer, nullable=False)
     cost_price = Column(Integer, nullable=False)
     date = Column("insert_dt", DateTime(timezone=True), nullable=False, default=datetime.utcnow())
+    is_paid = Column(Boolean, nullable=False, default=False)
 
     user_ = relationship("User", foreign_keys=[user_id], backref="jobs_")
 
