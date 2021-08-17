@@ -34,6 +34,14 @@ class Role(db.Model):
     role = Column(String, nullable=False)
 
 
+class RequestStatuses(db.Model):
+    __tablename__ = 'request_statuses'
+
+    code = Column(Integer, nullable=False, primary_key=True)
+    status = Column(String, nullable=False)
+    status_en = Column(String, nullable=False)
+
+
 class Request(db.Model):
     __tablename__ = 'requests'
 
@@ -47,13 +55,14 @@ class Request(db.Model):
     doc_type = Column(String)
     validity_period = Column(Integer)
     add_info = Column(String)
-    status = Column(Integer, nullable=False, default=0)
+    status = Column(Integer, ForeignKey('request_statuses.code'), nullable=False, default=0)
     files = Column(ARRAY(String), default=[])
     # operator_id = Column(UUID, ForeignKey('users.id'))
     date = Column('insert_dt', DateTime(timezone=True), nullable=False, default=datetime.utcnow())
     update_dt = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow())
 
     user_ = relationship("User", foreign_keys=[user_id], backref="requests_")
+    status_ = relationship(RequestStatuses)
 
 
 class Job(db.Model):

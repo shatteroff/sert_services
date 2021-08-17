@@ -8,7 +8,8 @@ import sqlalchemy
 from sqlalchemy import or_, func
 from sqlalchemy.orm import Query
 from alchemy_encoder import AlchemyEncoder
-from db_models import User, Request, PromoCode, AdditionalRequestInfo, Job, Leader, Margin, db, StatisticView, Payment
+from db_models import User, Request, PromoCode, AdditionalRequestInfo, Job, Leader, Margin, db, StatisticView, Payment, \
+    RequestStatuses
 
 try:
     from Config import Config
@@ -202,6 +203,10 @@ class Helper:
     def get_request_info(self, filter_dict):
         request_info = self.__session.query(AdditionalRequestInfo).filter_by(**filter_dict).one_or_none()
         return json.dumps(request_info if request_info else {}, cls=AlchemyEncoder, ensure_ascii=False)
+
+    def get_request_statuses(self):
+        statuses = self.__session.query(RequestStatuses).all()
+        return json.dumps(statuses if statuses else [], cls=AlchemyEncoder, ensure_ascii=False)
 
     @exec_time
     def job_registration(self, job_dict):

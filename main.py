@@ -200,6 +200,12 @@ def add_files_to_request(token_data):
     return h.add_files_to_request(info_dict)
 
 
+@app.route('/requests/getStatuses', methods=['GET'])
+# @check_for_token
+def get_statuses():
+    return h.get_request_statuses()
+
+
 @app.route('/jobs/post', methods=['POST'])
 @check_for_token
 def post_job(token_data):

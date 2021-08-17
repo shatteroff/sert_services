@@ -11,6 +11,8 @@ class AlchemyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Request):
             obj.user_name = obj.user_.name if obj.user_.name else obj.user_.alias
+            obj.status_description = obj.status_.status
+            obj.status_description_en = obj.status_.status_en
         elif isinstance(obj, Margin):
             obj.name = obj.user_.name
             obj.workplace = obj.user_.workplace
