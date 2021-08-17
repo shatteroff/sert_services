@@ -201,8 +201,8 @@ def add_files_to_request(token_data):
 
 
 @app.route('/requests/getStatuses', methods=['GET'])
-# @check_for_token
-def get_statuses():
+@check_for_token
+def get_statuses(token_data):
     return h.get_request_statuses()
 
 
