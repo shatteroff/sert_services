@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from datetime import datetime
 from functools import wraps
 
@@ -67,7 +68,7 @@ class Helper:
                 if user.alias.lower() == alias.lower():
                     errors.append('alias')
         else:
-            user = User(**user_dict)
+            user = User(**user_dict, id=str(uuid.uuid4()))
             self.__session.add(user)
             promo_code = user_dict.get('promo_code')
             if promo_code is not None:
