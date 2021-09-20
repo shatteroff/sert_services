@@ -76,7 +76,7 @@ class Helper:
                     job = Job(user_id=user.id, title=f'PROMO{promo[0]}', custom_code=119, client_price=promo[0],
                               cost_price=0)
                     self.__session.add(job)
-                    self.__session.commit()
+            self.__session.commit()
         return json.dumps({"registration": "ok" if not errors else {"errors": list(set(errors))}})
 
     @exec_time
