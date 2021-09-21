@@ -18,7 +18,7 @@ class User(db.Model):
     alias = Column(String(20), nullable=False)
     name = Column(String)
     password = Column(String)
-    insert_dt = Column(DateTime(timezone=True), default=datetime.utcnow())
+    insert_dt = Column(DateTime(timezone=True), default=datetime.utcnow)
     workplace = Column(String)
     promo_code = Column(String, ForeignKey('promos.code'), default='default')
     is_in_leaderboard = Column(Boolean, default=False)
