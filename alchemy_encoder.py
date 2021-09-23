@@ -3,7 +3,7 @@ from datetime import datetime
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-from db_models import Request, Margin
+from db_models import Request, Margin, AdditionalRequestInfo
 
 
 class AlchemyEncoder(json.JSONEncoder):
@@ -33,6 +33,8 @@ class AlchemyEncoder(json.JSONEncoder):
                 except TypeError:
                     # print(f"Can't encode var {field} type {type(data)}")
                     pass
+            if isinstance(obj, AdditionalRequestInfo):
+                fields.update(self.default(obj.request_))
             # a json-encodable dict
             return fields
 
