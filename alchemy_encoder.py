@@ -33,8 +33,9 @@ class AlchemyEncoder(json.JSONEncoder):
                 except TypeError:
                     # print(f"Can't encode var {field} type {type(data)}")
                     pass
-            if isinstance(obj, AdditionalRequestInfo):
-                fields.update(self.default(obj.request_))
+            if isinstance(obj, Request):
+                if obj.answer_ is not None:
+                    fields.update(self.default(obj.answer_))
             # a json-encodable dict
             return fields
 

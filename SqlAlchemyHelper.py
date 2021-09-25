@@ -202,7 +202,7 @@ class Helper:
 
     @exec_time
     def get_request_info(self, filter_dict):
-        request_info = self.__session.query(AdditionalRequestInfo).filter_by(**filter_dict).one_or_none()
+        request_info = self.__session.query(Request).filter_by(**filter_dict).one_or_none()
         return json.dumps(request_info if request_info else {}, cls=AlchemyEncoder, ensure_ascii=False)
 
     def get_request_statuses(self):

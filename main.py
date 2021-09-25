@@ -176,7 +176,7 @@ def get_user_requests(token_data):
 @app.route('/requests/getInfo', methods=['GET'])
 @check_for_token
 def get_request_info(token_data):
-    filter_dict = {'request_id': request.args.get('id'), 'user_id': token_data.get('user_id')}
+    filter_dict = dict(request.args)
     role = token_data.get('role')
     if role:
         if role.lower() == 'admin':
