@@ -156,6 +156,8 @@ def update_request(token_data):
 @check_for_token
 def update_request_status(token_data):
     request_dict = request.get_json()
+    if request_dict.get('user_id') is None:
+        request_dict.update({'user_id': token_data.get('user_id')})
     return h.request_update(request_dict)
 
 
