@@ -58,6 +58,8 @@ class Request(db.Model):
     status = Column(Integer, ForeignKey('request_statuses.code'), nullable=False, default=0)
     files = Column(ARRAY(String), default=[])
     # operator_id = Column(UUID, ForeignKey('users.id'))
+    certificate = Column(String)
+    layout = Column(String)
     date = Column('insert_dt', DateTime(timezone=True), nullable=False, default=datetime.utcnow())
     update_dt = Column(DateTime(timezone=True), nullable=False, default=datetime.utcnow())
 
